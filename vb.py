@@ -261,6 +261,66 @@ class PublicObjectDescriptor(vstruct.VStruct):
         self.dwNull = v_uint32()          # 0x2C dwNull Not valid after compilation.
 
 
+class ObjectInfo(vstruct.VStruct):
+    def __init__(self):
+        vstruct.VStruct.__init__(self)
+        self.wRefCount = v_uint16()        # 0x0 wRefCount Always 1 after compilation.
+        self.wObjectIndex = v_uint16()     # 0x2 wObjectIndex Index of this Object.
+        self.lpObjectTable = v_uint32()    # 0x4 lpObjectTable Pointer to the Object Table
+        self.lpIdeData = v_uint32()        # 0x8 lpIdeData Zero after compilation. Used in IDE only.
+        self.lpPrivateObject = v_uint32()  # 0xC lpPrivateObject Pointer to Private Object Descriptor.
+        self.dwReserved = v_uint32()       # 0x10 dwReserved Always -1 after compilation.
+        self.dwNull = v_uint32()           # 0x14 dwNull Unused.
+        self.lpObject = v_uint32()         # 0x18 lpObject Back-Pointer to Public Object Descriptor.
+        self.lpProjectData = v_uint32()    # 0x1C lpProjectData Pointer to in-memory Project Object.
+        self.wMethodCount = v_uint16()     # 0x20 wMethodCount Number of Methods
+        self.wMethodCount2 = v_uint16()    # 0x22 wMethodCount2 Zeroed out after compilation. IDE only.
+        self.lpMethods = v_uint32()        # 0x24 lpMethods Pointer to Array of Methods.
+        self.wConstants = v_uint16()       # 0x28 wConstants Number of Constants in Constant Pool.
+        self.wMaxConstants = v_uint16()    # 0x2A wMaxConstants Constants to allocate in Constant Pool.
+        self.lpIdeData2 = v_uint32()       # 0x2C lpIdeData2 Valid in IDE only.
+        self.lpIdeData3 = v_uint32()       # 0x30 lpIdeData3 Valid in IDE only.
+        self.lpConstants = v_uint32()      # 0x34 lpConstants Pointer to Constants Pool.
+
+class OptionalObjectInfo(vstruct.VStruct):
+    def __init__(self):
+        vstruct.VStruct.__init__(self)
+        self.dwObjectGuids = v_uint32()  # 0x0 dwObjectGuids How many GUIDs to Register. 2 = Designer
+        self.lpObjectGuid = v_uint32()  # 0x4 lpObjectGuid Unique GUID of the Object *VERIFY*
+        self.dwNull = v_uint32()  # 0x8 dwNull Unused.
+        self.lpuuidObjectTypes = v_uint32()  # 0xC lpuuidObjectTypes Pointer to Array of Object Interface GUIDs
+        self.dwObjectTypeGuids = v_uint32()  # 0x10 dwObjectTypeGuids How many GUIDs in the Array above.
+        self.lpControls2 = v_uint32()  # 0x14 lpControls2 Usually the same as lpControls.
+        self.dwNull2 = v_uint32()  # 0x18 dwNull2 Unused.
+        self.lpObjectGuid2 = v_uint32()  # 0x1C lpObjectGuid2 Pointer to Array of Object GUIDs.
+        self.dwControlCount = v_uint32()  # 0x20 dwControlCount Number of Controls in array below.
+        self.lpControls = v_uint32()  # 0x24 lpControls Pointer to Controls Array.
+        self.wEventCount = v_uint16()  # 0x28 wEventCount Number of Events in Event Array.
+        self.wPCodeCount = v_uint16()  # 0x2A wPCodeCount Number of P-Codes used by this Object.
+        self.bWInitializeEvent = v_uint16()  # 0x2C bWInitializeEvent Offset to Initialize Event from Event Table.
+        self.bWTerminateEvent = v_uint16()  # 0x2E bWTerminateEvent Offset to Terminate Event in Event Table.
+        self.lpEvents = v_uint32()  # 0x30 lpEvents Pointer to Events Array.
+        self.lpBasicClassObject = v_uint32()  # 0x34 lpBasicClassObject Pointer to in-memory Class Objects.
+        self.dwNull3 = v_uint32()  # 0x38 dwNull3 Unused.
+        self.lpIdeData = v_uint32()  # 0x3C lpIdeData Only valid in IDE.
+
+
+class ControlInfo(vstruct.VStruct):
+    def __init__(self):
+        vstruct.VStruct.__init__(self)
+        self.fControlType = v_uint32()  # 0x0 fControlType Type of control.
+        self.wEventCount = v_uint16()  # 0x4 wEventcount Number of Event Handlers supported.
+        self.bWEventsOffset = v_uint16()  # 0x6 bWEventsOffset Offset in to Memory struct to copy Events.
+        self.lpGuid = v_uint32()  # 0x8 lpGuid Pointer to GUID of this Control.
+        self.dwIndex = v_uint32()  # 0xC dwIndex Index ID of this Control.
+        self.dwNull = v_uint32()  # 0x10 dwNull Unused.
+        self.dwNull2 = v_uint32()  # 0x14 dwNull2 Unused.
+        self.lpEventTable = v_uint32()  # 0x18 lpEventTable Pointer to Event Handler Table.
+        self.lpIdeData = v_uint32()  # 0x1C lpIdeData Valid in IDE only.
+        self.lpszName = v_uint32()  # 0x20 lpszName Name of this Control.
+        self.dwIndexCopy = v_uint32()  # 0x24 dwIndexCopy Secondary Index ID of this Control.
+
+
 class VBAnalyzer:
     def __init__(self, ana):
         self.ana = ana
@@ -399,6 +459,7 @@ class VBAnalyzer:
                 private_object_descriptors.append(priv_obj_desc)
                 print(priv_obj_desc.tree())
 
+        object_infos = []
         public_object_descriptors = []
         if object_table.lpObjectArray != 0:
             for i in range(object_table.wCompiledObjects):
@@ -407,6 +468,11 @@ class VBAnalyzer:
                 public_object_descriptors.append(pub_obj_desc)
 
                 print(pub_obj_desc.tree())
+
+                object_info = self.read_struct(pub_obj_desc.lpObjectInfo, ObjectInfo)
+                object_infos.append(object_info)
+
+                print(object_info.tree())
 
             #import hexdump
             #hexdump.hexdump(self.ana.get_bytes(project_data2.lpObjectList, 0x100))
