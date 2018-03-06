@@ -188,19 +188,77 @@ class ProjectData(vstruct.VStruct):
         self.dwExternalCount = v_uint32()           # 0x238 dwExternalCount Objects in the External Table.
 
 
-class ProjectData(vstruct.VStruct):
+class ProjectData2(vstruct.VStruct):
     def __init__(self):
         vstruct.VStruct.__init__(self)
         self.lpHeapLink = v_uint32()            # 0x0 lpHeapLink Unused after compilation, always 0.
         self.lpObjectTable = v_uint32()         # 0x4 lpObjectTable Back-Pointer to the Object Table.
         self.dwReserved = v_uint32()            # 0x8 dwReserved Always set to -1 after compiling. Unused
         self.dwUnused = v_uint32()              # 0xC dwUnused Not written or read in any case.
+        # points to array of pointers to `PrivateObjectDescriptor`
         self.lpObjectList = v_uint32()          # 0x10 lpObjectList Pointer to Object Descriptor Pointers.
         self.dwUnused2 = v_uint32()             # 0x14 dwUnused2 Not written or read in any case.
         self.szProjectDescription = v_uint32()  # 0x18 szProjectDescription Pointer to Project Description
         self.szProjectHelpFile = v_uint32()     # 0x1C szProjectHelpFile Pointer to Project Help File
-        self.dwRseerved2 = v_uint32()           # 0x20 dwReserved2 Always set to -1 after compiling. Unused
+        self.dwReserved2 = v_uint32()           # 0x20 dwReserved2 Always set to -1 after compiling. Unused
         self.dwHelpContextId = v_uint32()       # 0x24 dwHelpContextId Help Context ID set in Project Settings.
+
+
+class PrivateObjectDescriptor(vstruct.VStruct):
+    def __init__(self):
+        vstruct.VStruct.__init__(self)
+        self.lpHeapLink = v_uint32()                                       # 0x0 lpHeapLink Unused after compilation, always 0.
+        self.lpObjectInfo = v_uint32()                                     # 0x4 lpObjectInfo Pointer to the Object Info for this Object.
+        self.dwReserved = v_uint32()                                       # 0x8 dwReserved Always set to -1 after compiling.
+        self.dwIdeData = vstruct.VArray([v_uint32() for _ in range(3)])      # 0xC dwIdeData[3] Not valid after compilation.
+        self.lpObjectList = v_uint32()                                     # 0x18 lpObjectList Points to the Parent Structure (Array)
+        self.dwIdeData2 = v_uint32()                                       # 0x1C dwIdeData2 Not valid after compilation.
+        self.lpObjectList2 = vstruct.VArray([v_uint32() for _ in range(3)])  # 0x20 lpObjectList2[3] Points to the Parent Structure (Array).
+        self.dwIdeData3 = vstruct.VArray([v_uint32() for _ in range(3)])     # 0x2C dwIdeData3[3] Not valid after compilation.
+        self.dwObjectType = v_uint32()                                     # 0x38 dwObjectType Type of the Object described.
+        self.dwIdentifier = v_uint32()                                     # 0x3C dwIdentifier Template Version of Structure.
+
+
+class ObjectTable(vstruct.VStruct):
+    def __init__(self):
+        vstruct.VStruct.__init__(self)
+        self.lpHeapLink = v_uint32()          # 0x0 lpHeapLink Unused after compilation, always 0.
+        self.lpExecProj = v_uint32()          # 0x4 lpExecProj Pointer to VB Project Exec COM Object.
+        self.lpProjectInfo2 = v_uint32()      # 0x8 lpProjectInfo2 Secondary Project Information
+        self.dwReserved = v_uint32()          # 0xC dwReserved Always set to -1 after compiling. Unused
+        self.dwNull = v_uint32()              # 0x10 dwNull Not used in compiled mode.
+        self.lpProjectObject = v_uint32()     # 0x14 lpProjectObject Pointer to in-memory Project Data.
+        self.uuidObject = v_bytes(size=0x10)  # 0x18 uuidObject GUID of the Object Table.
+        self.fCompileState = v_uint16()       # 0x28 fCompileState Internal flag used during compilation.
+        self.wTotalObjects = v_uint16()       # 0x2A wTotalObjects Total objects present in Project.
+        self.wCompiledObjects = v_uint16()    # 0x2C wCompiledObjects Equal to above after compiling.
+        self.wObjectsInUse = v_uint16()       # 0x2E wObjectsInUse Usually equal to above after compile.
+        self.lpObjectArray = v_uint32()       # 0x30 lpObjectArray Pointer to Object Descriptors
+        self.fIdeFlag = v_uint32()            # 0x34 fIdeFlag Flag/Pointer used in IDE only.
+        self.lpIdeData = v_uint32()           # 0x38 lpIdeData Flag/Pointer used in IDE only.
+        self.lpIdeData2 = v_uint32()          # 0x3C lpIdeData2 Flag/Pointer used in IDE only.
+        self.lpszProjectName = v_uint32()     # 0x40 lpszProjectName Pointer to Project Name.
+        self.dwLcid = v_uint32()              # 0x44 dwLcid LCID of Project.
+        self.dwLcid2 = v_uint32()             # 0x48 dwLcid2 Alternate LCID of Project.
+        self.lpIdeData3 = v_uint32()          # 0x4C lpIdeData3 Flag/Pointer used in IDE only.
+        self.dwIdentifier = v_uint32()        # 0x50 dwIdentifier Template Version of Structure.
+
+
+class PublicObjectDescriptor(vstruct.VStruct):
+    def __init__(self):
+        vstruct.VStruct.__init__(self)
+        self.lpObjectInfo = v_uint32()    # 0x0 lpObjectInfo Pointer to the Object Info for this Object.
+        self.dwReserved = v_uint32()      # 0x4 dwReserved Always set to -1 after compiling.
+        self.lpPublicBytes = v_uint32()   # 0x8 lpPublicBytes Pointer to Public Variable Size integers.
+        self.lpStaticBytes = v_uint32()   # 0xC lpStaticBytes Pointer to Static Variable Size integers.
+        self.lpModulePublic = v_uint32()  # 0x10 lpModulePublic Pointer to Public Variables in DATA section
+        self.lpModuleStatic = v_uint32()  # 0x14 lpModuleStatic Pointer to Static Variables in DATA section
+        self.lpszObjectName = v_uint32()  # 0x18 lpszObjectName Name of the Object.
+        self.dwMethodCount = v_uint32()   # 0x1C dwMethodCount Number of Methods in Object.
+        self.lpMethodNames = v_uint32()   # 0x20 lpMethodNames If present, pointer to Method names array.
+        self.bStaticVars = v_uint32()     # 0x24 bStaticVars Offset to where to copy Static Variables.
+        self.fObjectType = v_uint32()     # 0x28 fObjectType Flags defining the Object Type.
+        self.dwNull = v_uint32()          # 0x2C dwNull Not valid after compilation.
 
 
 class VBAnalyzer:
@@ -314,6 +372,45 @@ class VBAnalyzer:
 
         project_data = self.read_struct(header.lpProjectData, ProjectData)
         print(project_data.tree())
+
+        object_table = self.read_struct(project_data.lpObjectTable, ObjectTable)
+        print(object_table.tree())
+
+        project_data2 = self.read_struct(object_table.lpProjectInfo2, ProjectData2)
+        print(project_data2.tree())
+
+        private_object_descriptors = []
+        if project_data2.lpObjectList != 0x0:
+            va = int(project_data2.lpObjectList)
+            # according to here, there are `wCompiledObjects` entries in the list.
+            # http://www.openrce.org/repositories/users/Paolo/vbpython.py
+            for i in range(object_table.wCompiledObjects):
+                ptr = int(self.read_struct(va + (4 * i), v_uint32))
+                if ptr == 0xFFFFFFFF or ptr == 0x0:
+                    continue
+
+                try:
+                    priv_obj_desc = self.read_struct(ptr, PrivateObjectDescriptor)
+                except struct.error:
+                    logger.warning('failed to read private object descriptor: 0x%x', ptr)
+                    private_object_descriptors.append(None)
+                    continue
+
+                private_object_descriptors.append(priv_obj_desc)
+                print(priv_obj_desc.tree())
+
+        public_object_descriptors = []
+        if object_table.lpObjectArray != 0:
+            for i in range(object_table.wCompiledObjects):
+                va = object_table.lpObjectArray + (i * len(PublicObjectDescriptor()))
+                pub_obj_desc = self.read_struct(va, PublicObjectDescriptor)
+                public_object_descriptors.append(pub_obj_desc)
+
+                print(pub_obj_desc.tree())
+
+            #import hexdump
+            #hexdump.hexdump(self.ana.get_bytes(project_data2.lpObjectList, 0x100))
+
 
 def main(argv=None):
     if argv is None:
