@@ -354,9 +354,13 @@ class VBAnalyzer:
 
         return False
 
-    def find_vb_header(self):
+    def get_imported_dlls(self):
+        for entry in self.ana.mem.pe.DIRECTORY_ENTRY_IMPORT:
+            yield entry.dll.decode('ascii').lower()
 
-        # TODO: ensure vb runtime dll imported
+    def find_vb_header(self):
+        if 'MSVBVM60.DLL'.lower() not in self.get_imported_dlls():
+            raise RuntimeError('Visual Basic VM DLL not imported')
 
         # entrypoint:
         #
