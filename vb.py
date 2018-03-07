@@ -278,24 +278,24 @@ class ObjectInfo(vstruct.VStruct):
 class OptionalObjectInfo(vstruct.VStruct):
     def __init__(self):
         vstruct.VStruct.__init__(self)
-        self.dwObjectGuids = v_uint32()  # 0x0 dwObjectGuids How many GUIDs to Register. 2 = Designer
-        self.lpObjectGuid = v_uint32()  # 0x4 lpObjectGuid Unique GUID of the Object *VERIFY*
-        self.dwNull = v_uint32()  # 0x8 dwNull Unused.
-        self.lpuuidObjectTypes = v_uint32()  # 0xC lpuuidObjectTypes Pointer to Array of Object Interface GUIDs
-        self.dwObjectTypeGuids = v_uint32()  # 0x10 dwObjectTypeGuids How many GUIDs in the Array above.
-        self.lpControls2 = v_uint32()  # 0x14 lpControls2 Usually the same as lpControls.
-        self.dwNull2 = v_uint32()  # 0x18 dwNull2 Unused.
-        self.lpObjectGuid2 = v_uint32()  # 0x1C lpObjectGuid2 Pointer to Array of Object GUIDs.
-        self.dwControlCount = v_uint32()  # 0x20 dwControlCount Number of Controls in array below.
-        self.lpControls = v_uint32()  # 0x24 lpControls Pointer to Controls Array.
-        self.wEventCount = v_uint16()  # 0x28 wEventCount Number of Events in Event Array.
-        self.wPCodeCount = v_uint16()  # 0x2A wPCodeCount Number of P-Codes used by this Object.
-        self.bWInitializeEvent = v_uint16()  # 0x2C bWInitializeEvent Offset to Initialize Event from Event Table.
-        self.bWTerminateEvent = v_uint16()  # 0x2E bWTerminateEvent Offset to Terminate Event in Event Table.
-        self.lpEvents = v_uint32()  # 0x30 lpEvents Pointer to Events Array.
+        self.dwObjectGuids = v_uint32()       # 0x0 dwObjectGuids How many GUIDs to Register. 2 = Designer
+        self.lpObjectGuid = v_uint32()        # 0x4 lpObjectGuid Unique GUID of the Object *VERIFY*
+        self.dwNull = v_uint32()              # 0x8 dwNull Unused.
+        self.lpuuidObjectTypes = v_uint32()   # 0xC lpuuidObjectTypes Pointer to Array of Object Interface GUIDs
+        self.dwObjectTypeGuids = v_uint32()   # 0x10 dwObjectTypeGuids How many GUIDs in the Array above.
+        self.lpControls2 = v_uint32()         # 0x14 lpControls2 Usually the same as lpControls.
+        self.dwNull2 = v_uint32()             # 0x18 dwNull2 Unused.
+        self.lpObjectGuid2 = v_uint32()       # 0x1C lpObjectGuid2 Pointer to Array of Object GUIDs.
+        self.dwControlCount = v_uint32()      # 0x20 dwControlCount Number of Controls in array below.
+        self.lpControls = v_uint32()          # 0x24 lpControls Pointer to Controls Array.
+        self.wEventCount = v_uint16()         # 0x28 wEventCount Number of Events in Event Array.
+        self.wPCodeCount = v_uint16()         # 0x2A wPCodeCount Number of P-Codes used by this Object.
+        self.bWInitializeEvent = v_uint16()   # 0x2C bWInitializeEvent Offset to Initialize Event from Event Table.
+        self.bWTerminateEvent = v_uint16()    # 0x2E bWTerminateEvent Offset to Terminate Event in Event Table.
+        self.lpEvents = v_uint32()            # 0x30 lpEvents Pointer to Events Array.
         self.lpBasicClassObject = v_uint32()  # 0x34 lpBasicClassObject Pointer to in-memory Class Objects.
-        self.dwNull3 = v_uint32()  # 0x38 dwNull3 Unused.
-        self.lpIdeData = v_uint32()  # 0x3C lpIdeData Only valid in IDE.
+        self.dwNull3 = v_uint32()             # 0x38 dwNull3 Unused.
+        self.lpIdeData = v_uint32()           # 0x3C lpIdeData Only valid in IDE.
 
 
 class ControlInfo(vstruct.VStruct):
