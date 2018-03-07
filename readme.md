@@ -15,3 +15,8 @@ references:
   - http://www.openrce.org/repositories/users/Paolo/vbpython.py
   - https://www.virusbulletin.com/uploads/pdf/magazine/2002/200201.pdf
   - https://web.archive.org/web/20151222171103/http://www.woodmann.com/crackz/Tutorials/Vbpcode.htm
+  - https://github.com/VBGAMER45/Semi-VB-Decompiler
+  - http://www.dotfix.net/doc/reversing_pcode.htm
+  - http://sandsprite.com/vb-reversing/vbdecompiler.chm
+  - http://sandsprite.com/vb-reversing/vb-decompiler/
+
