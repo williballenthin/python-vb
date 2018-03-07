@@ -273,7 +273,6 @@ class ObjectInfo(vstruct.VStruct):
         self.lpIdeData2 = v_uint32()       # 0x2C lpIdeData2 Valid in IDE only.
         self.lpIdeData3 = v_uint32()       # 0x30 lpIdeData3 Valid in IDE only.
         self.lpConstants = v_uint32()      # 0x34 lpConstants Pointer to Constants Pool.
-        self.dwOptionalInfo = v_uint32()   # 0x38 first DWORD of the Optional Object Info.
 
 
 class OptionalObjectInfo(vstruct.VStruct):
@@ -313,6 +312,9 @@ class ControlInfo(vstruct.VStruct):
         self.lpIdeData = v_uint32()       # 0x1C lpIdeData Valid in IDE only.
         self.lpszName = v_uint32()        # 0x20 lpszName Name of this Control.
         self.dwIndexCopy = v_uint32()     # 0x24 dwIndexCopy Secondary Index ID of this Control.
+
+
+OBJECT_HAS_OPTIONAL_INFO = 0x1
 
 
 class VBAnalyzer:
@@ -478,8 +480,8 @@ class VBAnalyzer:
 
                 print(object_info.tree())
 
-                if object_info.dwOptionalInfo != object_info.lpConstants:
-                    va = pub_obj_desc.lpObjectInfo + len(ObjectInfo()) - 4
+                if (pub_obj_desc.fObjectType & OBJECT_HAS_OPTIONAL_INFO) > 0x0:
+                    va = pub_obj_desc.lpObjectInfo + len(ObjectInfo())
                     optional_object_info = self.read_struct(va, OptionalObjectInfo)
                     print(optional_object_info.tree())
 
