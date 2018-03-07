@@ -1,17 +1,9 @@
 #!/usr/bin/env python3
 '''
-some documentation
-
-requirements:
-  - pefile
-  - argparse
-  - capstone
-  - keystone
-  - unicorn
+parse Visual Basic PE files.
 
 author: Willi Ballenthin
-email: willi.ballenthin@gmail.com
-website: https://gist.github.com/williballenthin/f88c5c95f3e41157de3806dfbeef4bd4
+email: william.ballenthin@fireeye.com
 '''
 import sys
 import logging
@@ -281,6 +273,7 @@ class ObjectInfo(vstruct.VStruct):
         self.lpIdeData2 = v_uint32()       # 0x2C lpIdeData2 Valid in IDE only.
         self.lpIdeData3 = v_uint32()       # 0x30 lpIdeData3 Valid in IDE only.
         self.lpConstants = v_uint32()      # 0x34 lpConstants Pointer to Constants Pool.
+        self.dwOptionalInfo = v_uint32()   # 0x38 first DWORD of the Optional Object Info.
 
 class OptionalObjectInfo(vstruct.VStruct):
     def __init__(self):
@@ -361,6 +354,9 @@ class VBAnalyzer:
         return False
 
     def find_vb_header(self):
+
+        # TODO: ensure vb runtime dll imported
+
         # entrypoint:
         #
         #    .text:00402454                 public start
@@ -467,6 +463,9 @@ class VBAnalyzer:
                 pub_obj_desc = self.read_struct(va, PublicObjectDescriptor)
                 public_object_descriptors.append(pub_obj_desc)
 
+                object_name = self.read_string(pub_obj_desc.lpszObjectName)
+                print(f'object_name: {object_name}')
+
                 print(pub_obj_desc.tree())
 
                 object_info = self.read_struct(pub_obj_desc.lpObjectInfo, ObjectInfo)
@@ -474,15 +473,17 @@ class VBAnalyzer:
 
                 print(object_info.tree())
 
-            #import hexdump
-            #hexdump.hexdump(self.ana.get_bytes(project_data2.lpObjectList, 0x100))
+                if object_info.dwOptionalInfo != object_info.lpConstants:
+                    va = pub_obj_desc.lpObjectInfo + len(ObjectInfo()) - 4
+                    optional_object_info = self.read_struct(va, OptionalObjectInfo)
+                    print(optional_object_info.tree())
 
 
 def main(argv=None):
     if argv is None:
         argv = sys.argv[1:]
 
-    parser = argparse.ArgumentParser(description="A program.")
+    parser = argparse.ArgumentParser(description="Parse Visual Basic PE files.")
     parser.add_argument("input", type=str,
                         help="Path to input file")
     parser.add_argument("-v", "--verbose", action="store_true",
