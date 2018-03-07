@@ -301,12 +301,15 @@ class OptionalObjectInfo(vstruct.VStruct):
 class ControlInfo(vstruct.VStruct):
     def __init__(self):
         vstruct.VStruct.__init__(self)
-        self.fControlType = v_uint32()    # 0x0 fControlType Type of control.
-        self.wEventCount = v_uint16()     # 0x4 wEventcount Number of Event Handlers supported.
+        self.fImplements = v_uint16()     # 0x0 fImplements Does the control implement an interface?
+        self.wEventCount = v_uint16()     # 0x2 wEventCount Number of Event Handlers supported?
+        self.wUnk1 = v_uint16()           # 0x4 wUnk1
         self.bWEventsOffset = v_uint16()  # 0x6 bWEventsOffset Offset in to Memory struct to copy Events.
         self.lpGuid = v_uint32()          # 0x8 lpGuid Pointer to GUID of this Control.
-        self.dwIndex = v_uint32()         # 0xC dwIndex Index ID of this Control.
-        self.dwNull = v_uint32()          # 0x10 dwNull Unused.
+        self.wIndex = v_uint16()          # 0xC wIndex Index ID of this Control.
+        self.wUnk2 = v_uint16()           # 0xE wUnk2 Unknown
+        self.wUnnamedEvents = v_uint16()  # 0x10 wUnnamedEvents Number of "unnamed events".
+        self.wFlags = v_uint16()          # 0x12 wFlags 0x4 if there are "unnamed events".
         self.dwNull2 = v_uint32()         # 0x14 dwNull2 Unused.
         self.lpEventTable = v_uint32()    # 0x18 lpEventTable Pointer to Event Handler Table.
         self.lpIdeData = v_uint32()       # 0x1C lpIdeData Valid in IDE only.
