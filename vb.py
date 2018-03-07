@@ -275,6 +275,7 @@ class ObjectInfo(vstruct.VStruct):
         self.lpConstants = v_uint32()      # 0x34 lpConstants Pointer to Constants Pool.
         self.dwOptionalInfo = v_uint32()   # 0x38 first DWORD of the Optional Object Info.
 
+
 class OptionalObjectInfo(vstruct.VStruct):
     def __init__(self):
         vstruct.VStruct.__init__(self)
@@ -301,17 +302,17 @@ class OptionalObjectInfo(vstruct.VStruct):
 class ControlInfo(vstruct.VStruct):
     def __init__(self):
         vstruct.VStruct.__init__(self)
-        self.fControlType = v_uint32()  # 0x0 fControlType Type of control.
-        self.wEventCount = v_uint16()  # 0x4 wEventcount Number of Event Handlers supported.
+        self.fControlType = v_uint32()    # 0x0 fControlType Type of control.
+        self.wEventCount = v_uint16()     # 0x4 wEventcount Number of Event Handlers supported.
         self.bWEventsOffset = v_uint16()  # 0x6 bWEventsOffset Offset in to Memory struct to copy Events.
-        self.lpGuid = v_uint32()  # 0x8 lpGuid Pointer to GUID of this Control.
-        self.dwIndex = v_uint32()  # 0xC dwIndex Index ID of this Control.
-        self.dwNull = v_uint32()  # 0x10 dwNull Unused.
-        self.dwNull2 = v_uint32()  # 0x14 dwNull2 Unused.
-        self.lpEventTable = v_uint32()  # 0x18 lpEventTable Pointer to Event Handler Table.
-        self.lpIdeData = v_uint32()  # 0x1C lpIdeData Valid in IDE only.
-        self.lpszName = v_uint32()  # 0x20 lpszName Name of this Control.
-        self.dwIndexCopy = v_uint32()  # 0x24 dwIndexCopy Secondary Index ID of this Control.
+        self.lpGuid = v_uint32()          # 0x8 lpGuid Pointer to GUID of this Control.
+        self.dwIndex = v_uint32()         # 0xC dwIndex Index ID of this Control.
+        self.dwNull = v_uint32()          # 0x10 dwNull Unused.
+        self.dwNull2 = v_uint32()         # 0x14 dwNull2 Unused.
+        self.lpEventTable = v_uint32()    # 0x18 lpEventTable Pointer to Event Handler Table.
+        self.lpIdeData = v_uint32()       # 0x1C lpIdeData Valid in IDE only.
+        self.lpszName = v_uint32()        # 0x20 lpszName Name of this Control.
+        self.dwIndexCopy = v_uint32()     # 0x24 dwIndexCopy Secondary Index ID of this Control.
 
 
 class VBAnalyzer:
