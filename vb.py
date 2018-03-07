@@ -486,6 +486,24 @@ class VBAnalyzer:
                     print(optional_object_info.tree())
 
 
+                    # sanity check
+                    if optional_object_info.dwControlCount > 0xFF and optional_object_info.lpControls != 0x0:
+                        logger.info('many controls: %d', optional_object_info.dwControlCount)
+
+                    # TODO: check addr
+                    elif optional_object_info.dwControlCount != 0 and optional_object_info.lpControls != 0x0:
+                        for j in range(optional_object_info.dwControlCount):
+                            control_va = optional_object_info.lpControls + (j * len(ControlInfo()))
+                            control_info = self.read_struct(control_va, ControlInfo)
+                            control_name = self.read_string(control_info.lpszName)
+                            print(f'control_name: {control_name}')
+                            print(control_info.tree())
+
+
+
+
+
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv[1:]
