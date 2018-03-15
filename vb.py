@@ -638,6 +638,7 @@ class VBAnalyzer:
         header_va = self.find_vb_header()
         header = self.read_struct(header_va, EXEPROJECTINFO)
 
+        print(hex(header_va))
         print(header.tree())
         # TODO: check offsets make sense
         project_description = self.read_string(header_va + header.bSZProjectDescription)
@@ -656,6 +657,7 @@ class VBAnalyzer:
         help_directory = self.read_string(header.lpComRegisterData + com_reg_data.bSZHelpDirectory)
         project_description = self.read_string(header.lpComRegisterData + com_reg_data.bSZProjectDescription)
 
+        print(hex(header.lpComRegisterData))
         print(com_reg_data.tree())
         print(f'project_name: {project_name}')
         print(f'help_directory: {help_directory}')
@@ -664,14 +666,17 @@ class VBAnalyzer:
         com_reg_info = None
         if com_reg_data.bRegInfo != 0x0:
             com_reg_info = self.read_struct(com_reg_data.bRegInfo, tagRegInfo)
+            print(hex(com_reg_data.bRegInfo))
             print(com_reg_info.tree())
 
             if com_reg_info.bDesignerData != 0x0:
                 designer_info = self.read_struct(com_reg_info.bDesignerData, DesignerData)
+                print(hex(com_reg_info.bDesignerData))
                 print(designer_info.tree())
 
 
         project_data = self.read_struct(header.lpProjectData, ProjectData)
+        print(hex(header.lpProjectData))
         print(project_data.tree())
 
         entry_size = len(ExternalTableEntry())
@@ -690,10 +695,13 @@ class VBAnalyzer:
                 print('import: %s!%s' % (dll_name, api_name))
             else:
                 print('unknown external: %s %d' % (hex(entry.pImportDescriptor), entry.dwEntryType))
+
         object_table = self.read_struct(project_data.lpObjectTable, ObjectTable)
+        print(hex(project_data.lpObjectTable))
         print(object_table.tree())
 
         project_data2 = self.read_struct(object_table.lpProjectInfo2, ProjectData2)
+        print(hex(object_table.lpProjectInfo2))
         print(project_data2.tree())
 
         private_object_descriptors = []
@@ -714,6 +722,7 @@ class VBAnalyzer:
                     continue
 
                 private_object_descriptors.append(priv_obj_desc)
+                print(hex(ptr))
                 print(priv_obj_desc.tree())
 
         object_infos = []
@@ -726,17 +735,19 @@ class VBAnalyzer:
 
                 object_name = self.read_string(pub_obj_desc.lpszObjectName)
                 print(f'object_name: {object_name}')
-
+                print(hex(va))
                 print(pub_obj_desc.tree())
 
                 object_info = self.read_struct(pub_obj_desc.lpObjectInfo, ObjectInfo)
                 object_infos.append(object_info)
 
+                print(hex(pub_obj_desc.lpObjectInfo))
                 print(object_info.tree())
 
                 if (pub_obj_desc.fObjectType & OBJECT_HAS_OPTIONAL_INFO) > 0x0:
                     va = pub_obj_desc.lpObjectInfo + len(ObjectInfo())
                     optional_object_info = self.read_struct(va, OptionalObjectInfo)
+                    print(hex(va))
                     print(optional_object_info.tree())
 
 
@@ -753,6 +764,7 @@ class VBAnalyzer:
                             print(f'control_name: {control_name}')
                             control_guid = str(self.read_struct(control_info.lpGuid, GUID))
                             print(f'control_guid: {control_guid:s}')
+                            print(hex(va))
                             print(control_info.tree())
 
     def find_import_thunks(self):
@@ -810,7 +822,7 @@ def main(argv=None):
     from pprint import pprint
     vb.load()
 
-    pprint(list(vb.find_import_thunks()))
+    #pprint(list(vb.find_import_thunks()))
 
 
     return 0
