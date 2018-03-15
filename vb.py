@@ -5,6 +5,7 @@ parse Visual Basic PE files.
 author: Willi Ballenthin
 email: william.ballenthin@fireeye.com
 '''
+import re
 import sys
 import logging
 
@@ -528,6 +529,27 @@ CONTROL_EVENTS = {
     ],
 }
 
+
+# here's what import thunks often look like:
+#
+#     A1 ?? ?? ?? ??   mov     eax, dword_????
+#     0B C0            or      eax, eax
+#     74 02            jz      short loc_????
+#     FF E0            jmp     eax
+#     68 ?? ?? ?? ??   push    offset off_????
+#     B8 ?? ?? ?? ??   mov     eax, offset ????
+#     FF D0            call    eax
+#     FF E0            jmp     eax
+THUNK_PATTERN = re.compile(b'\xA1(?P<pFunction>....)\x0B\xC0\x74\x02\xFF\xE0\x68(?P<pImportDescriptor>....)\xB8(?P<pDllFunctionCall>....)\xFF\xD0\xFF\xE0')
+
+
+class ImportDescriptor(vstruct.VStruct):
+    def __init__(self):
+        vstruct.VStruct.__init__(self)
+        self.pDllName = v_uint32()
+        self.pApiName = v_uint32()
+
+
 class VBAnalyzer:
     def __init__(self, ana):
         self.ana = ana
@@ -710,9 +732,28 @@ class VBAnalyzer:
                             print(f'control_guid: {control_guid:s}')
                             print(control_info.tree())
 
+    def find_import_thunks(self):
+        '''
+        scan the module looking for things that look like import descriptors.
+        '''
+        for entry in self.ana.get_map():
+            buf = self.ana.get_bytes(entry.va, entry.size)
+            for match in THUNK_PATTERN.finditer(buf):
+                va = entry.va + match.start()
+                pImportDescriptor = vs_cast(match.group('pImportDescriptor'), v_uint32)
+                try:
+                    import_descriptor = self.read_struct(int(pImportDescriptor), ImportDescriptor)
+                    dll_name = self.read_string(import_descriptor.pDllName)
+                    api_name = self.read_string(import_descriptor.pApiName)
+                except IndexError:
+                    # invalid pointer, skip.
+                    continue
 
-
-
+                yield {
+                    'va': va,
+                    'dll': dll_name,
+                    'api': api_name,
+                }
 
 
 def main(argv=None):
@@ -745,6 +786,8 @@ def main(argv=None):
 
     from pprint import pprint
     vb.load()
+
+    pprint(list(vb.find_import_thunks()))
 
 
     return 0
