@@ -19,4 +19,8 @@ references:
   - http://www.dotfix.net/doc/reversing_pcode.htm
   - http://sandsprite.com/vb-reversing/vbdecompiler.chm
   - http://sandsprite.com/vb-reversing/vb-decompiler/
+  - http://www.dejadejadeja.com/detech/ocxdb/vb6.olb.txt.lisp
+  - https://pastebin.com/aKCyYWfZ
+  - http://blog.talosintelligence.com/2014/08/discovering-dynamically-loaded-api-in.html
+  - https://www.hex-rays.com/products/ida/support/freefiles/vb.idc
 
