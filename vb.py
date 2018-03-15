@@ -327,6 +327,207 @@ class ControlInfo(vstruct.VStruct):
 OBJECT_HAS_OPTIONAL_INFO = 0x1
 
 
+# these are the first four bytes of the control GUID.
+# via: https://github.com/vic4key/VB-Exe-Parser/blob/master/VB-Parser.py
+CONTROL_BUTTON       = 0x33AD4EF2
+CONTROL_TEXTBOX      = 0x33AD4EE2
+CONTROL_TIMER        = 0x33AD4F2A
+CONTROL_FORM         = 0x33AD4F3A
+CONTROL_FILE         = 0x33AD4F62
+CONTROL_OPTION       = 0x33AD4F02
+CONTROL_COMBOBOX     = 0x33AD4F03
+CONTROL_COMBOBOX2    = 0x33AD4F0A
+CONTROL_MENU         = 0x33AD4F6A
+CONTROL_LABEL        = 0x33AD4EDA
+
+CONTROL_NAMES = {
+    CONTROL_BUTTON: "BUTTON",
+    CONTROL_TEXTBOX: "TEXTBOX",
+    CONTROL_TIMER: "TIMER",
+    CONTROL_FORM: "FORM",
+    CONTROL_FILE: "FILE",
+    CONTROL_OPTION: "OPTION",
+    CONTROL_COMBOBOX: "COMBOBOX",
+    CONTROL_COMBOBOX2: "COMBOBOX2",
+    CONTROL_MENU: "MENU",
+    CONTROL_LABEL: "LABEL",
+}
+
+
+# via: https://github.com/vic4key/VB-Exe-Parser/blob/master/VB-Parser.py
+CONTROL_EVENTS = {
+    CONTROL_BUTTON: [
+        "Click",
+        "DragDrop",
+        "DragOver",
+        "GotFocus",
+        "KeyDown",
+        "KeyPress",
+        "KeyUp",
+        "LostFocus",
+        "MouseDown",
+        "MouseMove",
+        "MouseUp",
+        "OLEDragOver",
+        "OLEDragDrop",
+        "OLEGiveFeedback",
+        "OLEStartDrag",
+        "OLESetData",
+        "OLECompleteDrag",
+    ],
+    CONTROL_TEXTBOX: [
+        "Change",
+        "DragDrop",
+        "DragOver",
+        "GotFocus",
+        "KeyDown",
+        "KeyPress",
+        "KeyUp",
+        "LinkClose",
+        "LinkError",
+        "LinkOpen",
+        "LostFocus",
+        "LinkNotify",
+        "MouseDown",
+        "MouseMove",
+        "MouseUp",
+        "Click",
+        "DblClick",
+        "OLEDragOver",
+        "OLEDragDrop",
+        "OLEGiveFeedback",
+        "OLEStartDrag",
+        "OLESetData",
+        "OLECompleteDrag",
+        "Validate",
+    ],
+    CONTROL_FORM: [
+        "DragDrop",
+        "DragOver",
+        "LinkClose",
+        "LinkError",
+        "LinkExecute",
+        "LinkOpen",
+        "Load",
+        "Resize",
+        "Unload",
+        "QueryUnload",
+        "Activate",
+        "Deactivate",
+        "Click",
+        "DblClick",
+        "GotFocus",
+        "KeyDown",
+        "KeyPress",
+        "KeyUp",
+        "LostFocus",
+        "MouseDown",
+        "MouseMove",
+        "MouseUp",
+        "Paint",
+        "Initialize",
+        "Terminate",
+        "OLEDragOver",
+        "OLEDragDrop",
+        "OLEGiveFeedback",
+        "OLEStartDrag",
+        "OLESetData",
+        "OLECompleteDrag"
+    ],
+    CONTROL_FILE: [
+        "Click",
+        "DblClick",
+        "DragDrop",
+        "DragOver",
+        "GotFocus",
+        "KeyDown",
+        "KeyPress",
+        "KeyUp",
+        "LostFocus",
+        "MouseDown",
+        "MouseMove",
+        "MouseUp",
+        "PathChange",
+        "PatternChange",
+        "OLEDragOver",
+        "OLEDragDrop",
+        "OLEGiveFeedback",
+        "OLEStartDrag",
+        "OLESetData",
+        "OLECompleteDrag",
+        "Scroll",
+        "Validate"
+    ],
+    CONTROL_OPTION: [
+        "Click",
+        "DblClick",
+        "DragDrop",
+        "DragOver",
+        "GotFocus",
+        "KeyDown",
+        "KeyPress",
+        "KeyUp",
+        "LostFocus",
+        "MouseDown",
+        "MouseMove",
+        "MouseUp",
+        "OLEDragOver",
+        "OLEDragDrop",
+        "OLEGiveFeedback",
+        "OLEStartDrag",
+        "OLESetData",
+        "OLECompleteDrag",
+        "Validate"
+    ],
+    CONTROL_COMBOBOX: [
+        "Change",
+        "Click",
+        "DblClick",
+        "DragDrop",
+        "DragOver",
+        "DropDown",
+        "GotFocus",
+        "KeyDown",
+        "KeyPress",
+        "KeyUp",
+        "LostFocus",
+        "OLEDragOver",
+        "OLEDragDrop",
+        "OLEGiveFeedback",
+        "OLEStartDrag",
+        "OLESetData",
+        "OLECompleteDrag",
+        "Scroll",
+        "Validate"
+    ],
+    CONTROL_LABEL: [
+        "Change",
+        "Click",
+        "DblClick",
+        "DragDrop",
+        "DragOver",
+        "LinkClose",
+        "LinkError",
+        "LinkOpen",
+        "MouseDown",
+        "MouseMove",
+        "MouseUp",
+        "LinkNotify",
+        "OLEDragOver",
+        "OLEDragDrop",
+        "OLEGiveFeedback",
+        "OLEStartDrag",
+        "OLESetData",
+        "OLECompleteDrag"
+    ],
+    CONTROL_MENU: [
+        "Click"
+    ],
+    CONTROL_TIMER: [
+        "Timer"
+    ],
+}
+
 class VBAnalyzer:
     def __init__(self, ana):
         self.ana = ana
@@ -505,6 +706,8 @@ class VBAnalyzer:
                             control_info = self.read_struct(control_va, ControlInfo)
                             control_name = self.read_string(control_info.lpszName)
                             print(f'control_name: {control_name}')
+                            control_guid = str(self.read_struct(control_info.lpGuid, GUID))
+                            print(f'control_guid: {control_guid:s}')
                             print(control_info.tree())
 
 
