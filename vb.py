@@ -543,6 +543,13 @@ CONTROL_EVENTS = {
 THUNK_PATTERN = re.compile(b'\xA1(?P<pFunction>....)\x0B\xC0\x74\x02\xFF\xE0\x68(?P<pImportDescriptor>....)\xB8(?P<pDllFunctionCall>....)\xFF\xD0\xFF\xE0')
 
 
+class ExternalTableEntry(vstruct.VStruct):
+    def __init__(self):
+        vstruct.VStruct.__init__(self)
+        self.dwEntryType = v_uint32()
+        self.pImportDescriptor = v_uint32()
+
+
 class ImportDescriptor(vstruct.VStruct):
     def __init__(self):
         vstruct.VStruct.__init__(self)
@@ -667,6 +674,22 @@ class VBAnalyzer:
         project_data = self.read_struct(header.lpProjectData, ProjectData)
         print(project_data.tree())
 
+        entry_size = len(ExternalTableEntry())
+        for i in range(project_data.dwExternalCount):
+            entry = self.read_struct(project_data.lpExternalTable + (i * entry_size), ExternalTableEntry)
+
+            if entry.dwEntryType == 0x7:
+                # external
+                try:
+                    import_descriptor = self.read_struct(entry.pImportDescriptor, ImportDescriptor)
+                    dll_name = self.read_string(import_descriptor.pDllName)
+                    api_name = self.read_string(import_descriptor.pApiName)
+                except IndexError:
+                    # invalid pointer, skip.
+                    continue
+                print('import: %s!%s' % (dll_name, api_name))
+            else:
+                print('unknown external: %s %d' % (hex(entry.pImportDescriptor), entry.dwEntryType))
         object_table = self.read_struct(project_data.lpObjectTable, ObjectTable)
         print(object_table.tree())
 
