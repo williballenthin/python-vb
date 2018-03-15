@@ -105,6 +105,12 @@ class MemoryInterface(object):
         '''
         raise NotImplementedError()
 
+    def probe_address(self, va):
+        for entry in self.get_map():
+            if entry.va <= va < entry.va + entry.size:
+                return True
+        return False
+
 
 class PELoader(MemoryInterface):
     '''
