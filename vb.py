@@ -20,6 +20,13 @@ import analyzer
 logger = logging.getLogger(__name__)
 
 
+
+def vs_cast(buf, C):
+    c = C()
+    c.vsParse(buf)
+    return c
+
+
 THREAD_APARTMENTMODEL = 0x1  # ApartmentModel Specifies multi-threading using an apartment model.
 THREAD_REQUIRELICENSE = 0x2  # RequireLicense Specifies to do license validation (OCX only).
 THREAD_UNATTENDED = 0x4      # Unattended Specifies that no GUI elements should be initialized.
@@ -325,10 +332,8 @@ class VBAnalyzer:
         self.ana = ana
 
     def read_struct(self, va, C):
-        c = C()
-        buf = self.ana.get_bytes(va, len(c))
-        c.vsParse(buf)
-        return c
+        buf = self.ana.get_bytes(va, len(C()))
+        return vs_cast(buf, C)
 
     def read_string(self, va, size=0x100):
         return self.ana.get_bytes(va, size).partition(b'\x00')[0].decode('ascii')
