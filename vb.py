@@ -309,7 +309,7 @@ class OptionalObjectInfo(vstruct.VStruct):
 class ControlInfo(vstruct.VStruct):
     def __init__(self):
         vstruct.VStruct.__init__(self)
-        self.fImplements = v_uint16()     # 0x0 fImplements Does the control implement an interface?
+        self.fControlType = v_uint16()    # 0x0 fControlType
         self.wEventCount = v_uint16()     # 0x2 wEventCount Number of Event Handlers supported?
         self.wUnk1 = v_uint16()           # 0x4 wUnk1
         self.bWEventsOffset = v_uint16()  # 0x6 bWEventsOffset Offset in to Memory struct to copy Events.
@@ -340,6 +340,9 @@ CONTROL_COMBOBOX     = 0x33AD4F03
 CONTROL_COMBOBOX2    = 0x33AD4F0A
 CONTROL_MENU         = 0x33AD4F6A
 CONTROL_LABEL        = 0x33AD4EDA
+# via: http://www.dejadejadeja.com/detech/ocxdb/vb6.olb.txt.lisp
+CONTROL_LISTBOX      = 0x33AD4F12  # {33AD4F12-6699-11CF-B70C-00AA0060D393}
+
 
 CONTROL_NAMES = {
     CONTROL_BUTTON: "BUTTON",
@@ -352,6 +355,7 @@ CONTROL_NAMES = {
     CONTROL_COMBOBOX2: "COMBOBOX2",
     CONTROL_MENU: "MENU",
     CONTROL_LABEL: "LABEL",
+    CONTROL_LISTBOX: "LISTBOX",
 }
 
 
@@ -527,6 +531,29 @@ CONTROL_EVENTS = {
     CONTROL_TIMER: [
         "Timer"
     ],
+    CONTROL_LISTBOX: [
+	    "Click",
+	    "DblClick",
+	    "DragDrop",
+	    "DragOver",
+	    "GotFocus",
+	    "KeyDown",
+	    "KeyPress",
+	    "KeyUp",
+	    "LostFocus",
+	    "MouseDown",
+	    "MouseMove",
+	    "MouseUp",
+	    "OLEDragOver",
+	    "OLEDragDrop",
+	    "OLEGiveFeedback",
+	    "OLEStartDrag",
+	    "OLESetData",
+	    "OLECompleteDrag",
+	    "Scroll",
+	    "ItemCheck",
+	    "Validate",
+    ],
 }
 
 
@@ -555,6 +582,59 @@ class ImportDescriptor(vstruct.VStruct):
         vstruct.VStruct.__init__(self)
         self.pDllName = v_uint32()
         self.pApiName = v_uint32()
+
+
+
+class MethodLink(vstruct.VStruct):
+    def __init__(self):
+        vstruct.VStruct.__init__(self)
+        self.bLinkType = v_uint8()
+        self.pMethod = v_uint32()
+
+
+class EventHandlerInfo(vstruct.VStruct):
+    def __init__(self):
+        vstruct.VStruct.__init__(self)
+        self.dwNull = v_uint32()
+        self.pControls = v_uint32()
+        self.pObjectInfo = v_uint32()
+        self.pEVENT_SINK_QueryInterface = v_uint32()
+        self.pEVENT_SINK_AddRef = v_uint32()
+        self.pEVENT_SINK_Release = v_uint32()
+
+
+class ExtendedEventHandlerInfo(vstruct.VStruct):
+    def __init__(self):
+        vstruct.VStruct.__init__(self)
+        self.dwNull = v_uint32()
+        self.pControls = v_uint32()
+        self.pObjectInfo = v_uint32()
+        self.pEVENT_SINK_QueryInterface = v_uint32()
+        self.pEVENT_SINK_AddRef = v_uint32()
+        self.pEVENT_SINK_Release = v_uint32()
+        self.pIDISPATCH_GetTypeInfoCount = v_uint32()
+        self.pIDISPATCH_GetTypeInfo = v_uint32()
+        self.pIDISPATCH_GetIDsOfNames = v_uint32()
+        self.pIDISPATCH_Invoke = v_uint32()
+
+
+class EventTableEntry(vstruct.VStruct):
+    # example table entry (disassembled as code):
+    #
+    #     81 6C 24 04 FF FF 00 00                     sub     dword ptr [esp+4], 0FFFFh
+    #     E9 2E BD 02 00                              jmp     loc_446670
+    def __init__(self):
+        vstruct.VStruct.__init__(self)
+        self.fFlags = v_uint32()
+        # via: https://www.hex-rays.com/products/ida/support/freefiles/vb.idc
+        self.wProcType = v_uint32()  # method: 0xFFFF, event: *
+        self.link = MethodLink()
+
+
+def listmap(l):
+    return {
+        i: v for i, v in enumerate(l)
+    }
 
 
 class VBAnalyzer:
@@ -674,7 +754,6 @@ class VBAnalyzer:
                 print(hex(com_reg_info.bDesignerData))
                 print(designer_info.tree())
 
-
         project_data = self.read_struct(header.lpProjectData, ProjectData)
         print(hex(header.lpProjectData))
         print(project_data.tree())
@@ -750,6 +829,35 @@ class VBAnalyzer:
                     print(hex(va))
                     print(optional_object_info.tree())
 
+                    if pub_obj_desc.lpMethodNames:
+                        #for j in range(pub_obj_desc.dwMethodCount):
+                        for j in range(optional_object_info.wMethodLinkCount + 1):
+                            name_ptr = int(self.read_struct(pub_obj_desc.lpMethodNames + ((j + 2) * 4), v_uint32))
+                            method_link_ptr = int(self.read_struct(optional_object_info.lpMethodLinkTable + (j * 4), v_uint32))
+
+                            if name_ptr == 0x0 or method_link_ptr == 0x0:
+                                continue
+
+                            if not self.ana.mem.probe_address(name_ptr):
+                                method_name = ""
+                            else:
+                                try:
+                                    method_name = self.read_string(name_ptr)
+                                except UnicodeDecodeError:
+                                    method_name = ""
+
+                            # this is *not* correct.
+                            method_link = self.read_struct(method_link_ptr, MethodLink)
+                            if method_link.bLinkType == 0xE9:
+                                method_type = 'native-code'
+                            else:
+                                method_type = 'unknown'
+
+                            method_va = self.ana.disassembler[method_link_ptr].operands[0].imm
+
+                            print(f'method {j:d}: {method_name:s} at 0x{method_va:x} {method_link_ptr:x} ({method_type:s})')
+
+                    print("")
 
                     # sanity check
                     if optional_object_info.dwControlCount > 0xFF and optional_object_info.lpControls != 0x0:
@@ -763,9 +871,47 @@ class VBAnalyzer:
                             control_name = self.read_string(control_info.lpszName)
                             print(f'control_name: {control_name}')
                             control_guid = str(self.read_struct(control_info.lpGuid, GUID))
-                            print(f'control_guid: {control_guid:s}')
-                            print(hex(va))
+                            control_id = int(self.read_struct(control_info.lpGuid, v_uint32))
+                            control_type_name = CONTROL_NAMES.get(control_id, "CONTROL_UNKNOWN")
+                            print(f'control_guid: {control_guid:s} ({control_type_name})')
+                            print(hex(control_va))
                             print(control_info.tree())
+
+                            if control_info.fControlType == 0x40:
+                                # this is a well-known control.
+                                #
+                                # control_info.lpEventTable points to EventHandlerInfo
+                                # there will be control_info.wEventCount slots after the EventHandlerInfo, may have null entries.
+                                # each of these points to an EventHandlerTableEntry.
+                                # use the interface layout to recover the names of these event handlers.
+                                handler_info = self.read_struct(control_info.lpEventTable, EventHandlerInfo)
+                                event_table_va = control_info.lpEventTable + len(handler_info)
+                                for k in range(control_info.wEventCount):
+                                    entry_va = int(self.read_struct(event_table_va + (k * 4), v_uint32))
+                                    if entry_va != 0x0:
+                                        entry = self.read_struct(entry_va, EventTableEntry)
+                                        handler_name = listmap(CONTROL_EVENTS.get(control_id, [])).get(k, "unknown")
+                                        print(f'{control_name}_{handler_name}')
+                                        print(entry.tree())
+
+                                handler_info = self.read_struct(control_info.lpEventTable, EventHandlerInfo)
+                            elif control_info.fControlType == 0x2E:
+                                # this is a COM control?
+                                #
+                                # control_info.lpEventTable points to ExtendedEventHandlerInfo
+                                # there will be control_info.wEventCount slots after the EventHandlerInfo, may have null entries.
+                                # each of these points to an EventHandlerTableEntry.
+                                #
+                                # don't know if its possible to recover the names of these handlers.
+                                handler_info = self.read_struct(control_info.lpEventTable, ExtendedEventHandlerInfo)
+                                event_table_va = control_info.lpEventTable + len(handler_info)
+                                for k in range(control_info.wEventCount):
+                                    entry_va = int(self.read_struct(event_table_va + (k * 4), v_uint32))
+                                    if entry_va != 0x0:
+                                        entry = self.read_struct(entry_va, EventTableEntry)
+                                        print(entry.tree())
+                            else:
+                                print(f'unknown control type: {control_info.fControlType:x}')
 
     def find_import_thunks(self):
         '''
@@ -789,7 +935,6 @@ class VBAnalyzer:
                     'dll': dll_name,
                     'api': api_name,
                 }
-
 
 def main(argv=None):
     if argv is None:
