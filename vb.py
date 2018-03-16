@@ -35,52 +35,52 @@ THREAD_SINGLETHREADED = 0x8  # SingleThreaded Specifies that the image is single
 THREAD_RETAINED = 0x10       # Retained Specifies to keep the file in memory (Unattended only)
 
 # first flag zone
-CONTROL_PICTUREBOX = 0x1           # 0x0 0x1 PictureBox Object
-CONTROL_LABEL = 0x2                #  0x1 0x2 Label Object
-CONTROL_TEXTBOX = 0x4              #  0x2 0x4 TextBox Object
-CONTROL_FRAME = 0x8                #  0x3 0x8 Frame Object
-CONTROL_COMMANDBUTTON = 0x10       #  0x4 0x10 CommandButton Object
-CONTROL_CHECKBOX = 0x20            #  0x5 0x20 CheckBox Object
-CONTROL_OPTIONBUTTON = 0x40        #  0x6 0x40 OptionButton Object
-CONTROL_COMBOBOX = 0x80            #  0x7 0x80 ComboBox Object
-CONTROL_LISTBOX = 0x100            #  0x8 0x100 ListBox Object
-CONTROL_HSCROLLBAR = 0x200         #  0x9 0x200 HScrollBar Object
-CONTROL_VSCROLLBAR = 0x400         #  0xA 0x400 VScrollBar Object
-CONTROL_TIMER = 0x800              #  0xB 0x800 Timer Object
-CONTROL_PRINT = 0x1000             #  0xC 0x1000 Print Object
-CONTROL_FORM = 0x2000              #  0xD 0x2000 Form Object
-CONTROL_SCREEN = 0x4000            #  0xE 0x4000 Screen Object
-CONTROL_CLIPBOARD = 0x8000         #  0xF 0x8000 Clipboard Object
-CONTROL_DRIVE = 0x10000            #  0x10 0x10000 Drive Object
-CONTROL_DIR = 0x20000              #  0x11 0x20000 Dir Object
-CONTROL_FILELISTBOX = 0x40000      #  0x12 0x40000 FileListBox Object
-CONTROL_MENU = 0x80000             #  0x13 0x80000 Menu Object
-CONTROL_MDIFORM = 0x100000         #  0x14 0x100000 MDIForm Object
-CONTROL_APP = 0x200000             #  0x15 0x200000 App Object
-CONTROL_SHAPE = 0x400000           #  0x16 0x400000 Shape Object
-CONTROL_LINE = 0x800000            #  0x17 0x800000 Line Object
-CONTROL_IMAGE = 0x1000000          #  0x18 0x1000000 Image Object
-CONTROL_UNSUPPORTED0 = 0x2000000   #  0x19 0x2000000 Unsupported
-CONTROL_UNSUPPORTED1 = 0x4000000   #  0x1A 0x4000000 Unsupported
-CONTROL_UNSUPPORTED2 = 0x8000000   #  0x1B 0x8000000 Unsupported
-CONTROL_UNSUPPORTED3 = 0x10000000  #  0x1C 0x10000000 Unsupported
-CONTROL_UNSUPPORTED4 = 0x20000000  #  0x1D 0x20000000 Unsupported
-CONTROL_UNSUPPORTED5 = 0x40000000  #  0x1E 0x40000000 Unsupported
-CONTROL_UNSUPPORTED6 = 0x80000000  #  0x1F 0x80000000 Unsupported
+CONTROL_FLAG_PICTUREBOX = 0x1           # 0x0 0x1 PictureBox Object
+CONTROL_FLAG_LABEL = 0x2                #  0x1 0x2 Label Object
+CONTROL_FLAG_TEXTBOX = 0x4              #  0x2 0x4 TextBox Object
+CONTROL_FLAG_FRAME = 0x8                #  0x3 0x8 Frame Object
+CONTROL_FLAG_COMMANDBUTTON = 0x10       #  0x4 0x10 CommandButton Object
+CONTROL_FLAG_CHECKBOX = 0x20            #  0x5 0x20 CheckBox Object
+CONTROL_FLAG_OPTIONBUTTON = 0x40        #  0x6 0x40 OptionButton Object
+CONTROL_FLAG_COMBOBOX = 0x80            #  0x7 0x80 ComboBox Object
+CONTROL_FLAG_LISTBOX = 0x100            #  0x8 0x100 ListBox Object
+CONTROL_FLAG_HSCROLLBAR = 0x200         #  0x9 0x200 HScrollBar Object
+CONTROL_FLAG_VSCROLLBAR = 0x400         #  0xA 0x400 VScrollBar Object
+CONTROL_FLAG_TIMER = 0x800              #  0xB 0x800 Timer Object
+CONTROL_FLAG_PRINT = 0x1000             #  0xC 0x1000 Print Object
+CONTROL_FLAG_FORM = 0x2000              #  0xD 0x2000 Form Object
+CONTROL_FLAG_SCREEN = 0x4000            #  0xE 0x4000 Screen Object
+CONTROL_FLAG_CLIPBOARD = 0x8000         #  0xF 0x8000 Clipboard Object
+CONTROL_FLAG_DRIVE = 0x10000            #  0x10 0x10000 Drive Object
+CONTROL_FLAG_DIR = 0x20000              #  0x11 0x20000 Dir Object
+CONTROL_FLAG_FILELISTBOX = 0x40000      #  0x12 0x40000 FileListBox Object
+CONTROL_FLAG_MENU = 0x80000             #  0x13 0x80000 Menu Object
+CONTROL_FLAG_MDIFORM = 0x100000         #  0x14 0x100000 MDIForm Object
+CONTROL_FLAG_APP = 0x200000             #  0x15 0x200000 App Object
+CONTROL_FLAG_SHAPE = 0x400000           #  0x16 0x400000 Shape Object
+CONTROL_FLAG_LINE = 0x800000            #  0x17 0x800000 Line Object
+CONTROL_FLAG_IMAGE = 0x1000000          #  0x18 0x1000000 Image Object
+CONTROL_FLAG_UNSUPPORTED0 = 0x2000000   #  0x19 0x2000000 Unsupported
+CONTROL_FLAG_UNSUPPORTED1 = 0x4000000   #  0x1A 0x4000000 Unsupported
+CONTROL_FLAG_UNSUPPORTED2 = 0x8000000   #  0x1B 0x8000000 Unsupported
+CONTROL_FLAG_UNSUPPORTED3 = 0x10000000  #  0x1C 0x10000000 Unsupported
+CONTROL_FLAG_UNSUPPORTED4 = 0x20000000  #  0x1D 0x20000000 Unsupported
+CONTROL_FLAG_UNSUPPORTED5 = 0x40000000  #  0x1E 0x40000000 Unsupported
+CONTROL_FLAG_UNSUPPORTED6 = 0x80000000  #  0x1F 0x80000000 Unsupported
 
 # second flag zone
-CONTROL_UNSUPPORTED7 = 0x1     # 0x20 0x1 Unsupported
-CONTROL_UNSUPPORTED8 = 0x2     # 0x21 0x2 Unsupported
-CONTROL_UNSUPPORTED9 = 0x4     # 0x22 0x4 Unsupported
-CONTROL_UNSUPPORTED10 = 0x8    # 0x23 0x8 Unsupported
-CONTROL_UNSUPPORTED11 = 0x10   # 0x24 0x10 Unsupported
-CONTROL_DATAQUERY = 0x20       # 0x25 0x20 DataQuery Object
-CONTROL_OLE = 0x40             # 0x26 0x40 OLE Object
-CONTROL_UNSUPPORTED12 = 0x80   # 0x27 0x80 Unsupported
-CONTROL_USERCONTROL = 0x100    # 0x28 0x100 UserControl Object
-CONTROL_PROPERTYPAGE = 0x200   # 0x29 0x200 PropertyPage Object
-CONTROL_DOCUMENT = 0x400       # 0x2A 0x400 Document Object
-CONTROL_UNSUPPORTED13 = 0x800  # 0x2B 0x800 Unsupported
+CONTROL_FLAG_UNSUPPORTED7 = 0x1     # 0x20 0x1 Unsupported
+CONTROL_FLAG_UNSUPPORTED8 = 0x2     # 0x21 0x2 Unsupported
+CONTROL_FLAG_UNSUPPORTED9 = 0x4     # 0x22 0x4 Unsupported
+CONTROL_FLAG_UNSUPPORTED10 = 0x8    # 0x23 0x8 Unsupported
+CONTROL_FLAG_UNSUPPORTED11 = 0x10   # 0x24 0x10 Unsupported
+CONTROL_FLAG_DATAQUERY = 0x20       # 0x25 0x20 DataQuery Object
+CONTROL_FLAG_OLE = 0x40             # 0x26 0x40 OLE Object
+CONTROL_FLAG_UNSUPPORTED12 = 0x80   # 0x27 0x80 Unsupported
+CONTROL_FLAG_USERCONTROL = 0x100    # 0x28 0x100 UserControl Object
+CONTROL_FLAG_PROPERTYPAGE = 0x200   # 0x29 0x200 PropertyPage Object
+CONTROL_FLAG_DOCUMENT = 0x400       # 0x2A 0x400 Document Object
+CONTROL_FLAG_UNSUPPORTED13 = 0x800  # 0x2B 0x800 Unsupported
 
 
 class EXEPROJECTINFO(vstruct.VStruct):
@@ -327,7 +327,6 @@ class ControlInfo(vstruct.VStruct):
 
 OBJECT_HAS_OPTIONAL_INFO = 0x1
 
-
 # these are the first four bytes of the control GUID.
 # via: https://github.com/vic4key/VB-Exe-Parser/blob/master/VB-Parser.py
 CONTROL_BUTTON       = 0x33AD4EF2
@@ -343,6 +342,18 @@ CONTROL_LABEL        = 0x33AD4EDA
 # via: http://www.dejadejadeja.com/detech/ocxdb/vb6.olb.txt.lisp
 CONTROL_LISTBOX      = 0x33AD4F12  # {33AD4F12-6699-11CF-B70C-00AA0060D393}
 
+# via: https://www.hex-rays.com/products/ida/support/freefiles/vb.idc
+CONTROL_DRIVE        = 0x33AD4F52
+CONTROL_VSCROLL      = 0x33AD4F22
+CONTROL_HSCROLL      = 0x33AD4F1A
+CONTROL_DIR          = 0x33AD4F5A
+CONTROL_DATA         = 0x33AD4FFA
+CONTROL_IMAGE        = 0x33AD4F92
+CONTROL_FRAME        = 0x33AD4EEA
+CONTROL_OLE          = 0x33AD5002
+CONTROL_CHECKBOX     = 0x33AD4EFA
+CONTROL_PICTURE      = 0x33AD4ED2
+
 
 CONTROL_NAMES = {
     CONTROL_BUTTON: "BUTTON",
@@ -356,6 +367,16 @@ CONTROL_NAMES = {
     CONTROL_MENU: "MENU",
     CONTROL_LABEL: "LABEL",
     CONTROL_LISTBOX: "LISTBOX",
+    CONTROL_DRIVE: "DRIVE",
+    CONTROL_VSCROLL: "VSCROLL",
+    CONTROL_HSCROLL: "HSCROLL",
+    CONTROL_DIR: "DIR",
+    CONTROL_DATA: "DATA",
+    CONTROL_IMAGE: "IMAGE",
+    CONTROL_FRAME: "FRAME",
+    CONTROL_OLE: "OLE",
+    CONTROL_CHECKBOX: "CHECKBOX",
+    CONTROL_PICTURE: "PICTURE",
 }
 
 
@@ -554,6 +575,182 @@ CONTROL_EVENTS = {
 	    "ItemCheck",
 	    "Validate",
     ],
+    CONTROL_DRIVE: [
+        "Change",
+        "DragDrop",
+        "DragOver",
+        "GotFocus",
+        "KeyDown",
+        "KeyPress",
+        "KeyUp",
+        "LostFocus",
+        "OLEDragOver",
+        "OLEDragDrop",
+        "OLEGiveFeedback",
+        "OLEStartDrag",
+        "OLESetDrive",
+        "OLECompleteDrag",
+        "Scroll",
+        "Validate",
+    ],
+    CONTROL_VSCROLL: [
+        "Change",
+        "DragDrop",
+        "DragOver",
+        "GotFocus",
+        "KeyDown",
+        "KeyPress",
+        "KeyUp",
+        "LostFocus",
+        "Scroll",
+        "Validate",
+    ],
+    CONTROL_HSCROLL: [
+        "Change",
+        "DragDrop",
+        "DragOver",
+        "GotFocus",
+        "KeyDown",
+        "KeyPress",
+        "KeyUp",
+        "LostFocus",
+        "Scroll",
+        "Validate",
+    ],
+    CONTROL_DIR: [
+        "Change",
+        "Click",
+        "DragDrop",
+        "DragOver",
+        "GotFocus",
+        "KeyDown",
+        "KeyPress",
+        "KeyUp",
+        "LostFocus",
+        "MouseDown",
+        "MouseMove",
+        "MouseUp",
+        "OLEDragOver",
+        "OLEDragDrop",
+        "OLEGiveFeedback",
+        "OLEStartDrag",
+        "OLESetData",
+        "OLECompleteDrag",
+        "Scroll",
+        "Validate",
+    ],
+    CONTROL_DATA: [
+        "Error",
+        "Reposition",
+        "Validate",
+        "DragDrop",
+        "DragOver",
+        "MouseDown",
+        "MouseMove",
+        "MouseUp",
+        "Resize",
+        "OLEDragOver",
+        "OLEDragDrop",
+        "OLEGiveFeedback",
+        "OLEStartDrag",
+        "OLESetData",
+        "OLECompleteDrag",
+    ],
+    CONTROL_IMAGE: [
+        "Click",
+        "DlbClick",
+        "DragDrop",
+        "DragOver",
+        "MouseDown",
+        "MouseMove",
+        "MouseUp",
+        "OLEDragOver",
+        "OLEDragDrop",
+        "OLEGiveFeedback",
+        "OLEStartDrag",
+        "OLESetData",
+        "OLECompleteDrag",
+    ],
+    CONTROL_FRAME: [
+        "DragDrop",
+        "DragOver,"
+        "MouseDown",
+        "MouseMove",
+        "MouseUp",
+        "Click",
+        "DlbClick",
+        "OLEDragOver",
+        "OLEDragDrop",
+        "OLEGiveFeedback",
+        "OLEStartDrag",
+        "OLESetData",
+        "OLECompleteDrag",
+    ],
+    CONTROL_OLE: [
+        "Click",
+        "DblClick",
+        "DragDrop",
+        "DragOver",
+        "GotFocus",
+        "KeyDown",
+        "KeyPress",
+        "KeyUp",
+        "LostFocus",
+        "MouseDown",
+        "MouseMove",
+        "MouseUp",
+        "Resize",
+        "Updated",
+        "ObjectMove",
+        "Validate",
+    ],
+    CONTROL_CHECKBOX: [
+        "Click",
+        "DragDrop",
+        "DragOver",
+        "GotFocus",
+        "KeyDown",
+        "KeyPress",
+        "KeyUp",
+        "LostFocus",
+        "MouseDown",
+        "MouseMove",
+        "MouseUp",
+        "OLEDragOver",
+        "OLEDragDrop",
+        "OLEGiveFeedback",
+        "OLEStartDrag",
+        "OLESetData",
+        "OLECompleteDrag",
+    ],
+    CONTROL_PICTURE: [
+        "Change",
+        "Click",
+        "DblClick",
+        "DragDrop",
+        "DragOver",
+        "GotFocus",
+        "KeyDown",
+        "KeyPress",
+        "KeyUp",
+        "LinkClose",
+        "LinkError",
+        "LinkOpen",
+        "LostFocus",
+        "MouseDown",
+        "MouseMove",
+        "MouseUp",
+        "Paint",
+        "LinkNotify",
+        "Resize",
+        "OLEDragOver",
+        "OLEDragDrop",
+        "OLEGiveFeedback",
+        "OLEStartDrag",
+        "OLESetData",
+        "OLECompleteDrag",
+        "Validate",
+    ],
 }
 
 
@@ -582,7 +779,6 @@ class ImportDescriptor(vstruct.VStruct):
         vstruct.VStruct.__init__(self)
         self.pDllName = v_uint32()
         self.pApiName = v_uint32()
-
 
 
 class MethodLink(vstruct.VStruct):
