@@ -1329,11 +1329,17 @@ def main(argv=None):
     ana = analyzer.Analyzer(mem)
     vb = VBAnalyzer(ana)
 
+    header = vb.get_header()
+
+    from pprint import pprint
+    pprint(vb.get_header_strings(header))
+
+    com_reg = vb.get_com_registration(header)
+    pprint(vb.get_com_registration_strings(header, com_reg))
+
     for imp in vb.find_import_thunks():
         print('0x{va:08x} {dll}!{api}'.format(**imp))
 
-
-    header = vb.get_header()
     project_data = vb.get_project_data(header)
     obj_table = vb.get_object_table(project_data)
     proj_data2 = vb.get_project_data2(obj_table)
@@ -1344,16 +1350,19 @@ def main(argv=None):
 
         opt_obj_info = vb.get_optional_object_info(pub_obj)
 
-        print('  controls:')
-        for control in vb.get_object_controls(opt_obj_info):
-            control_meta = vb.get_control_meta(control)
-            print('  - {control_name} ({control_type_name})'.format(**control_meta))
+        controls = list(vb.get_object_controls(opt_obj_info))
+        if controls:
+            print('  controls:')
+            for control in controls:
+                control_meta = vb.get_control_meta(control)
+                print('  - {control_name} ({control_type_name})'.format(**control_meta))
 
-            print('    events:')
-            for event in vb.get_control_events(control):
-                print('      - {va:08x} {handler_name}'.format(**event))
+                events = list(vb.get_control_events(control))
+                if events:
+                    print('    events:')
+                    for event in events:
+                        print('      - {va:08x} {handler_name}'.format(**event))
 
-    #from pprint import pprint
     #vb.load()
 
     #pprint(list(vb.find_import_thunks()))
