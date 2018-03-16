@@ -1301,6 +1301,66 @@ class VBAnalyzer:
                     'api': api_name,
                 }
 
+    @property
+    def objects(self):
+        header = self.get_header()
+        project_data = self.get_project_data(header)
+        obj_table = self.get_object_table(project_data)
+        proj_data2 = self.get_project_data2(obj_table)
+
+        ret = {}
+        for pub_obj in self.get_public_object_descriptors(obj_table, proj_data2):
+            obj_name = self.get_public_object_descriptor_strings(pub_obj)['object_name']
+            ret[obj_name] = VBAnalyzer.Object(self, pub_obj)
+
+        return ret
+
+    class Object:
+        def __init__(self, vb, pub_obj):
+            self.vb = vb
+            self.pub_obj = pub_obj
+            self._cache = None
+
+        @property
+        def controls(self):
+            if self._cache is not None:
+                return dict(self._cache)
+
+            opt_obj_info = self.vb.get_optional_object_info(self.pub_obj)
+            ret = {}
+            for control in self.vb.get_object_controls(opt_obj_info):
+                control_meta = self.vb.get_control_meta(control)
+                ret[control_meta['control_name']] = VBAnalyzer.Control(self.vb, control)
+            self._cache = ret
+            return dict(ret)
+
+    class Control:
+        def __init__(self, vb, control):
+            self.vb = vb
+            self.control = control
+            self._cache = None
+
+        @property
+        def events(self):
+            if self._cache is not None:
+                return dict(self._cache)
+
+            ret = {}
+            for event in self.vb.get_control_events(self.control):
+                ret[event['handler_name']] = VBAnalyzer.Event(self.vb, event)
+            self._cache = ret
+            return dict(ret)
+
+    class Event:
+        def __init__(self, vb, event):
+            self.vb = vb
+            self.event = event
+            self.handler_name = event['handler_name']
+            self.handler_va = event['va']
+            self.control_name = event['control_name']
+            self.event_name = event['event_name']
+
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv[1:]
@@ -1363,10 +1423,10 @@ def main(argv=None):
                     for event in events:
                         print('      - {va:08x} {handler_name}'.format(**event))
 
-    #vb.load()
-
-    #pprint(list(vb.find_import_thunks()))
-
+    for name, obj in vb.objects.items():
+        for control in obj.controls.values():
+            for event in control.events.values():
+                print(event.handler_name)
 
     return 0
 
