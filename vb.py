@@ -974,9 +974,9 @@ class VBAnalyzer:
             assert vb.get_com_registration_strings(header, com_reg)['project_name'] == 'foo'
         '''
         # TODO: check offsets make sense
-        project_name = self.read_string(header.lpComRegisterData + com_reg_data.bSZProjectName)
-        help_directory = self.read_string(header.lpComRegisterData + com_reg_data.bSZHelpDirectory)
-        project_description = self.read_string(header.lpComRegisterData + com_reg_data.bSZProjectDescription)
+        project_name = self.read_string(header.lpComRegisterData + com_registration.bSZProjectName)
+        help_directory = self.read_string(header.lpComRegisterData + com_registration.bSZHelpDirectory)
+        project_description = self.read_string(header.lpComRegisterData + com_registration.bSZProjectDescription)
 
         return {
             'project_name': project_name,
