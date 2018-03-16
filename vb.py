@@ -919,50 +919,121 @@ class VBAnalyzer:
 
         return insn0.operands[0].imm
 
-    def load(self):
+    def get_header(self):
+        '''
+        example::
+
+            vb = VBAnalyzer(ana)
+            assert vb.get_header().szVbMagic == b'VB5!'
+        '''
+        header_va = self.find_vb_header()
+        return self.read_struct(header_va, EXEPROJECTINFO)
+
+    def get_header_strings(self, header):
+        '''
+        example::
+
+            vb = VBAnalyzer(ana)
+            header = vb.get_header()
+            assert vb.get_header_strings(header)['project_name'] == 'foo'
+        '''
+        # actually, ignore the header arg, cause we need to know header_va, too
         header_va = self.find_vb_header()
         header = self.read_struct(header_va, EXEPROJECTINFO)
 
-        print(hex(header_va))
-        print(header.tree())
         # TODO: check offsets make sense
         project_description = self.read_string(header_va + header.bSZProjectDescription)
         project_exe_name = self.read_string(header_va + header.bSZProjectExeName)
         project_help_file = self.read_string(header_va + header.bSZProjectHelpFile)
         project_name = self.read_string(header_va + header.bSZProjectName)
 
-        print(f'project_name: {project_name}')
-        print(f'project_description: {project_description}')
-        print(f'project_exe_name: {project_exe_name}')
-        print(f'project_help_file: {project_help_file}')
+        return {
+            'project_description': project_description,
+            'project_exe_name': project_exe_name,
+            'project_help_file': project_help_file,
+            'project_name': project_name,
+        }
 
-        com_reg_data = self.read_struct(header.lpComRegisterData, tagREGDATA)
+    def get_com_registration(self, header):
+        '''
+        example::
+
+            vb = VBAnalyzer(ana)
+            header = vb.get_header()
+            assert vb.get_com_registration(header).uuidProjectClsId == b'123456...'
+        '''
+        return self.read_struct(header.lpComRegisterData, tagREGDATA)
+
+    def get_com_registration_strings(self, header, com_registration):
+        '''
+        example::
+
+            vb = VBAnalyzer(ana)
+            header = vb.get_header()
+            com_reg = vb.get_com_registration(header)
+            assert vb.get_com_registration_strings(header, com_reg)['project_name'] == 'foo'
+        '''
         # TODO: check offsets make sense
         project_name = self.read_string(header.lpComRegisterData + com_reg_data.bSZProjectName)
         help_directory = self.read_string(header.lpComRegisterData + com_reg_data.bSZHelpDirectory)
         project_description = self.read_string(header.lpComRegisterData + com_reg_data.bSZProjectDescription)
 
-        print(hex(header.lpComRegisterData))
-        print(com_reg_data.tree())
-        print(f'project_name: {project_name}')
-        print(f'help_directory: {help_directory}')
-        print(f'project_description: {project_description}')
+        return {
+            'project_name': project_name,
+            'help_directory': help_directory,
+            'project_description': project_description,
+        }
 
-        com_reg_info = None
-        if com_reg_data.bRegInfo != 0x0:
-            com_reg_info = self.read_struct(com_reg_data.bRegInfo, tagRegInfo)
-            print(hex(com_reg_data.bRegInfo))
-            print(com_reg_info.tree())
+    def get_com_registration_info(self, com_registration):
+        '''
+        example::
 
-            if com_reg_info.bDesignerData != 0x0:
-                designer_info = self.read_struct(com_reg_info.bDesignerData, DesignerData)
-                print(hex(com_reg_info.bDesignerData))
-                print(designer_info.tree())
+            vb = VBAnalyzer(ana)
+            header = vb.get_header()
+            com_reg = vb.get_com_registration(header)
+            assert vb.get_com_registration_info(com_reg).dwObjectId == 0x69
+        '''
+        if com_registration.bRegInfo == 0x0:
+            raise RuntimeError('no registration info')
 
-        project_data = self.read_struct(header.lpProjectData, ProjectData)
-        print(hex(header.lpProjectData))
-        print(project_data.tree())
+        return self.read_struct(com_reg_data.bRegInfo, tagRegInfo)
 
+    def get_designer_data(self, com_registration_info):
+        '''
+        example::
+
+            vb = VBAnalyzer(ana)
+            header = vb.get_header()
+            com_reg = vb.get_com_registration(header)
+            com_info = vb.get_com_registration_info(com_reg)
+            assert vb.get_designer_data(com_info).uuidDesigner == b'123456...'
+        '''
+        if com_reg_info.bDesignerData == 0x0:
+            raise RuntimeError('no designer data')
+
+        return self.read_struct(com_reg_info.bDesignerData, DesignerData)
+
+    def get_project_data(self, header):
+        '''
+        example::
+
+            vb = VBAnalyzer(ana)
+            header = vb.get_header()
+            assert vb.get_project_data(header).dwVersion == 0x1F4
+        '''
+        return self.read_struct(header.lpProjectData, ProjectData)
+
+    def get_import_descriptors(self, project_data):
+        '''
+        example::
+
+            vb = VBAnalyzer(ana)
+            header = vb.get_header()
+            project_data = vb.get_project_data(header)
+            for imp in vb.get_import_descriptors(project_data):
+                if imp['dll'] == 'kernel32.dll':
+                    print(imp['api'])
+        '''
         entry_size = len(ExternalTableEntry())
         for i in range(project_data.dwExternalCount):
             entry = self.read_struct(project_data.lpExternalTable + (i * entry_size), ExternalTableEntry)
@@ -976,151 +1047,240 @@ class VBAnalyzer:
                 except IndexError:
                     # invalid pointer, skip.
                     continue
-                print('import: %s!%s' % (dll_name, api_name))
+                yield {
+                    'dll': dll_name,
+                    'api': api,
+                }
             else:
-                print('unknown external: %s %d' % (hex(entry.pImportDescriptor), entry.dwEntryType))
+                logger.warning('unknown external: 0x%x 0x%x', entry.pImportDescriptor, entry.dwEntryType)
+                continue
 
-        object_table = self.read_struct(project_data.lpObjectTable, ObjectTable)
-        print(hex(project_data.lpObjectTable))
-        print(object_table.tree())
+    def get_object_table(self, project_data):
+        '''
+        example::
 
-        project_data2 = self.read_struct(object_table.lpProjectInfo2, ProjectData2)
-        print(hex(object_table.lpProjectInfo2))
-        print(project_data2.tree())
+            vb = VBAnalyzer(ana)
+            header = vb.get_header()
+            project_data = vb.get_project_data(header)
+            assert vb.get_object_table(project_data).wCompiledObjects == 0x69
+        '''
+        return self.read_struct(project_data.lpObjectTable, ObjectTable)
 
-        private_object_descriptors = []
-        if project_data2.lpObjectList != 0x0:
-            va = int(project_data2.lpObjectList)
-            # according to here, there are `wCompiledObjects` entries in the list.
-            # http://www.openrce.org/repositories/users/Paolo/vbpython.py
-            for i in range(object_table.wCompiledObjects):
-                ptr = int(self.read_struct(va + (4 * i), v_uint32))
-                if ptr == 0xFFFFFFFF or ptr == 0x0:
+    def get_project_data2(self, object_table):
+        '''
+        example::
+
+            vb = VBAnalyzer(ana)
+            header = vb.get_header()
+            project_data = vb.get_project_data(header)
+            obj_table = vb.get_object_table(project_data)
+            assert vb.get_project_data2(obj_table).dwHelpContextId == 0x69
+        '''
+        return self.read_struct(object_table.lpProjectInfo2, ProjectData2)
+
+    def get_private_object_descriptors(self, object_table, project_data2):
+        '''
+        example::
+
+            vb = VBAnalyzer(ana)
+            header = vb.get_header()
+            project_data = vb.get_project_data(header)
+            obj_table = vb.get_object_table(project_data)
+            proj_data2 = vb.get_project_data2(obj_table)
+            for priv_obj in vb.get_private_object_descriptors(obj_table, proj_data2):
+                print(hex(priv_obj.dwObjectType))
+        '''
+        if project_data2.lpObjectList == 0x0:
+            raise RuntimeError('no private object table')
+
+        va = int(project_data2.lpObjectList)
+        # according to here, there are `wCompiledObjects` entries in the list.
+        # http://www.openrce.org/repositories/users/Paolo/vbpython.py
+        for i in range(object_table.wCompiledObjects):
+            ptr = int(self.read_struct(va + (4 * i), v_uint32))
+            if ptr == 0xFFFFFFFF or ptr == 0x0:
+                continue
+
+            try:
+                priv_obj_desc = self.read_struct(ptr, PrivateObjectDescriptor)
+            except struct.error:
+                logger.warning('failed to read private object descriptor: 0x%x', ptr)
+                private_object_descriptors.append(None)
+                continue
+            else:
+                yield priv_obj_desc
+
+    def get_public_object_descriptors(self, object_table, project_data2):
+        '''
+        example::
+
+            vb = VBAnalyzer(ana)
+            header = vb.get_header()
+            project_data = vb.get_project_data(header)
+            obj_table = vb.get_object_table(project_data)
+            proj_data2 = vb.get_project_data2(obj_table)
+            for pub_obj in vb.get_public_object_descriptors(obj_table, proj_data2):
+                print(pub_obj.dwMethodCount)
+        '''
+        if project_data2.lpObjectList == 0x0:
+            raise RuntimeError('no public object table')
+
+        for i in range(object_table.wCompiledObjects):
+            va = object_table.lpObjectArray + (i * len(PublicObjectDescriptor()))
+            yield self.read_struct(va, PublicObjectDescriptor)
+
+    def get_public_object_descriptor_strings(self, pub_obj_desc):
+        '''
+        example::
+
+            vb = VBAnalyzer(ana)
+            header = vb.get_header()
+            project_data = vb.get_project_data(header)
+            obj_table = vb.get_object_table(project_data)
+            proj_data2 = vb.get_project_data2(obj_table)
+            for pub_obj in vb.get_public_object_descriptors(obj_table, proj_data2):
+                print(vb.get_public_object_descriptor_strings(pub_obj))
+        '''
+        object_name = self.read_string(pub_obj_desc.lpszObjectName)
+        return {
+            'object_name': object_name
+        }
+
+    def get_object_info(self, pub_obj_desc):
+        '''
+        example::
+
+            vb = VBAnalyzer(ana)
+            header = vb.get_header()
+            project_data = vb.get_project_data(header)
+            obj_table = vb.get_object_table(project_data)
+            proj_data2 = vb.get_project_data2(obj_table)
+            for pub_obj in vb.get_public_object_descriptors(obj_table, proj_data2):
+                assert vb.get_object_info(pub_obj).wRefCount == 0x1
+        '''
+        return self.read_struct(pub_obj_desc.lpObjectInfo, ObjectInfo)
+
+    def get_optional_object_info(self, pub_obj_desc):
+        if (pub_obj_desc.fObjectType & OBJECT_HAS_OPTIONAL_INFO) == 0x0:
+            raise RuntimeError('no optional object info')
+
+        va = pub_obj_desc.lpObjectInfo + len(ObjectInfo())
+        return self.read_struct(va, OptionalObjectInfo)
+
+    def get_object_controls(self, optional_object_info):
+        # sanity check
+        if optional_object_info.dwControlCount > 0xFF and optional_object_info.lpControls != 0x0:
+            return
+
+        if optional_object_info.dwControlCount == 0:
+            return
+
+        # TODO: better pointer check
+        if optional_object_info.lpControls == 0:
+            return
+
+        for i in range(optional_object_info.dwControlCount):
+            control_va = optional_object_info.lpControls + (i * len(ControlInfo()))
+            yield self.read_struct(control_va, ControlInfo)
+
+    def get_control_meta(self, control_info):
+        control_name = self.read_string(control_info.lpszName)
+        control_guid = str(self.read_struct(control_info.lpGuid, GUID))
+        control_id = int(self.read_struct(control_info.lpGuid, v_uint32))
+        control_type_name = CONTROL_NAMES.get(control_id, "CONTROL_UNKNOWN")
+
+        return {
+            'control_name': control_name,
+            'control_guid': control_guid,
+            'control_id': control_id,
+            'control_type_name': control_type_name,
+        }
+
+    def get_control_events(self, control_info):
+        '''
+        example::
+
+            vb = VBAnalyzer(ana)
+            header = vb.get_header()
+            project_data = vb.get_project_data(header)
+            obj_table = vb.get_object_table(project_data)
+            proj_data2 = vb.get_project_data2(obj_table)
+            for pub_obj in vb.get_public_object_descriptors(obj_table, proj_data2):
+                opt_obj_info = vb.get_optional_object_info(pub_obj)
+                for control in vb.get_object_controls(opt_obj_info):
+                    for event in vb.get_control_events(control):
+                        print(event['handler_name'], hex(event['va']))
+        '''
+        control_name = self.read_string(control_info.lpszName)
+        control_id = int(self.read_struct(control_info.lpGuid, v_uint32))
+        if control_info.fControlType == 0x40:
+            # this is a well-known control.
+            #
+            # control_info.lpEventTable points to EventHandlerInfo
+            # there will be control_info.wEventCount slots after the EventHandlerInfo, may have null entries.
+            # each of these points to an EventHandlerTableEntry.
+            # use the interface layout to recover the names of these event handlers.
+            handler_info = self.read_struct(control_info.lpEventTable, EventHandlerInfo)
+            event_table_va = control_info.lpEventTable + len(handler_info)
+            for i in range(control_info.wEventCount):
+                entry_va = int(self.read_struct(event_table_va + (i * 4), v_uint32))
+                # TODO: better pointer check
+                if entry_va == 0x0:
                     continue
 
-                try:
-                    priv_obj_desc = self.read_struct(ptr, PrivateObjectDescriptor)
-                except struct.error:
-                    logger.warning('failed to read private object descriptor: 0x%x', ptr)
-                    private_object_descriptors.append(None)
+                entry = self.read_struct(entry_va, EventTableEntry)
+                handler_name = listmap(CONTROL_EVENTS.get(control_id, [])).get(i, "unknown")
+                # seek to jmp instruction:
+                #     E9 2E BD 02 00     jmp     loc_446670
+                handler_va = self.ana.disassembler[entry_va + 0x8].operands[0].imm
+
+                yield {
+                    'handler_name': f'{control_name}_{handler_name}',
+                    'control_name': control_name,
+                    'event_name': handler_name,
+                    'va': handler_va,
+                    'entry': entry,
+                }
+        elif control_info.fControlType == 0x2E:
+            # this is a COM control?
+            #
+            # control_info.lpEventTable points to ExtendedEventHandlerInfo
+            # there will be control_info.wEventCount slots after the EventHandlerInfo, may have null entries.
+            # each of these points to an EventHandlerTableEntry.
+            #
+            # don't know if its possible to recover the names of these handlers.
+            handler_info = self.read_struct(control_info.lpEventTable, ExtendedEventHandlerInfo)
+            event_table_va = control_info.lpEventTable + len(handler_info)
+            for i in range(control_info.wEventCount):
+                entry_va = int(self.read_struct(event_table_va + (i * 4), v_uint32))
+                if entry_va == 0x0:
                     continue
 
-                private_object_descriptors.append(priv_obj_desc)
-                print(hex(ptr))
-                print(priv_obj_desc.tree())
+                entry = self.read_struct(entry_va, EventTableEntry)
+                # seek to jmp instruction:
+                #     E9 2E BD 02 00     jmp     loc_446670
+                handler_va = self.ana.disassembler[entry_va + 0x8].operands[0].imm
 
-        object_infos = []
-        public_object_descriptors = []
-        if object_table.lpObjectArray != 0:
-            for i in range(object_table.wCompiledObjects):
-                va = object_table.lpObjectArray + (i * len(PublicObjectDescriptor()))
-                pub_obj_desc = self.read_struct(va, PublicObjectDescriptor)
-                public_object_descriptors.append(pub_obj_desc)
-
-                object_name = self.read_string(pub_obj_desc.lpszObjectName)
-                print(f'object_name: {object_name}')
-                print(hex(va))
-                print(pub_obj_desc.tree())
-
-                object_info = self.read_struct(pub_obj_desc.lpObjectInfo, ObjectInfo)
-                object_infos.append(object_info)
-
-                print(hex(pub_obj_desc.lpObjectInfo))
-                print(object_info.tree())
-
-                if (pub_obj_desc.fObjectType & OBJECT_HAS_OPTIONAL_INFO) > 0x0:
-                    va = pub_obj_desc.lpObjectInfo + len(ObjectInfo())
-                    optional_object_info = self.read_struct(va, OptionalObjectInfo)
-                    print(hex(va))
-                    print(optional_object_info.tree())
-
-                    if pub_obj_desc.lpMethodNames:
-                        #for j in range(pub_obj_desc.dwMethodCount):
-                        for j in range(optional_object_info.wMethodLinkCount + 1):
-                            name_ptr = int(self.read_struct(pub_obj_desc.lpMethodNames + ((j + 2) * 4), v_uint32))
-                            method_link_ptr = int(self.read_struct(optional_object_info.lpMethodLinkTable + (j * 4), v_uint32))
-
-                            if name_ptr == 0x0 or method_link_ptr == 0x0:
-                                continue
-
-                            if not self.ana.mem.probe_address(name_ptr):
-                                method_name = ""
-                            else:
-                                try:
-                                    method_name = self.read_string(name_ptr)
-                                except UnicodeDecodeError:
-                                    method_name = ""
-
-                            # this is *not* correct.
-                            method_link = self.read_struct(method_link_ptr, MethodLink)
-                            if method_link.bLinkType == 0xE9:
-                                method_type = 'native-code'
-                            else:
-                                method_type = 'unknown'
-
-                            method_va = self.ana.disassembler[method_link_ptr].operands[0].imm
-
-                            print(f'method {j:d}: {method_name:s} at 0x{method_va:x} {method_link_ptr:x} ({method_type:s})')
-
-                    print("")
-
-                    # sanity check
-                    if optional_object_info.dwControlCount > 0xFF and optional_object_info.lpControls != 0x0:
-                        logger.info('many controls: %d', optional_object_info.dwControlCount)
-
-                    # TODO: check addr
-                    elif optional_object_info.dwControlCount != 0 and optional_object_info.lpControls != 0x0:
-                        for j in range(optional_object_info.dwControlCount):
-                            control_va = optional_object_info.lpControls + (j * len(ControlInfo()))
-                            control_info = self.read_struct(control_va, ControlInfo)
-                            control_name = self.read_string(control_info.lpszName)
-                            print(f'control_name: {control_name}')
-                            control_guid = str(self.read_struct(control_info.lpGuid, GUID))
-                            control_id = int(self.read_struct(control_info.lpGuid, v_uint32))
-                            control_type_name = CONTROL_NAMES.get(control_id, "CONTROL_UNKNOWN")
-                            print(f'control_guid: {control_guid:s} ({control_type_name})')
-                            print(hex(control_va))
-                            print(control_info.tree())
-
-                            if control_info.fControlType == 0x40:
-                                # this is a well-known control.
-                                #
-                                # control_info.lpEventTable points to EventHandlerInfo
-                                # there will be control_info.wEventCount slots after the EventHandlerInfo, may have null entries.
-                                # each of these points to an EventHandlerTableEntry.
-                                # use the interface layout to recover the names of these event handlers.
-                                handler_info = self.read_struct(control_info.lpEventTable, EventHandlerInfo)
-                                event_table_va = control_info.lpEventTable + len(handler_info)
-                                for k in range(control_info.wEventCount):
-                                    entry_va = int(self.read_struct(event_table_va + (k * 4), v_uint32))
-                                    if entry_va != 0x0:
-                                        entry = self.read_struct(entry_va, EventTableEntry)
-                                        handler_name = listmap(CONTROL_EVENTS.get(control_id, [])).get(k, "unknown")
-                                        print(f'{control_name}_{handler_name}')
-                                        print(entry.tree())
-
-                                handler_info = self.read_struct(control_info.lpEventTable, EventHandlerInfo)
-                            elif control_info.fControlType == 0x2E:
-                                # this is a COM control?
-                                #
-                                # control_info.lpEventTable points to ExtendedEventHandlerInfo
-                                # there will be control_info.wEventCount slots after the EventHandlerInfo, may have null entries.
-                                # each of these points to an EventHandlerTableEntry.
-                                #
-                                # don't know if its possible to recover the names of these handlers.
-                                handler_info = self.read_struct(control_info.lpEventTable, ExtendedEventHandlerInfo)
-                                event_table_va = control_info.lpEventTable + len(handler_info)
-                                for k in range(control_info.wEventCount):
-                                    entry_va = int(self.read_struct(event_table_va + (k * 4), v_uint32))
-                                    if entry_va != 0x0:
-                                        entry = self.read_struct(entry_va, EventTableEntry)
-                                        print(entry.tree())
-                            else:
-                                print(f'unknown control type: {control_info.fControlType:x}')
+                yield {
+                    'handler_name': f'{control_name}_unknown_event{i:d}',
+                    'control_name': control_name,
+                    'event_name': f'unknown_event{i:d}',
+                    'va': handler_va,
+                    'entry': entry,
+                }
+        else:
+            logger.warning('unknown control type: %x', control_info.fControlType)
 
     def find_import_thunks(self):
         '''
         scan the module looking for things that look like import descriptors.
+
+        example::
+
+            vb = VBAnalyzer(ana)
+            for imp in vb.find_import_thunks():
+                if imp['dll'] == 'kernel32.dll':
+                    print(imp['api'])
         '''
         for entry in self.ana.get_map():
             buf = self.ana.get_bytes(entry.va, entry.size)
@@ -1169,8 +1329,32 @@ def main(argv=None):
     ana = analyzer.Analyzer(mem)
     vb = VBAnalyzer(ana)
 
-    from pprint import pprint
-    vb.load()
+    for imp in vb.find_import_thunks():
+        print('0x{va:08x} {dll}!{api}'.format(**imp))
+
+
+    header = vb.get_header()
+    project_data = vb.get_project_data(header)
+    obj_table = vb.get_object_table(project_data)
+    proj_data2 = vb.get_project_data2(obj_table)
+    print('objects:')
+    for pub_obj in vb.get_public_object_descriptors(obj_table, proj_data2):
+        obj_name = vb.get_public_object_descriptor_strings(pub_obj)['object_name']
+        print(f'- object: {obj_name}')
+
+        opt_obj_info = vb.get_optional_object_info(pub_obj)
+
+        print('  controls:')
+        for control in vb.get_object_controls(opt_obj_info):
+            control_meta = vb.get_control_meta(control)
+            print('  - {control_name} ({control_type_name})'.format(**control_meta))
+
+            print('    events:')
+            for event in vb.get_control_events(control):
+                print('      - {va:08x} {handler_name}'.format(**event))
+
+    #from pprint import pprint
+    #vb.load()
 
     #pprint(list(vb.find_import_thunks()))
 
