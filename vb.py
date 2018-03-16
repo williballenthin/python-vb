@@ -354,6 +354,10 @@ CONTROL_OLE          = 0x33AD5002
 CONTROL_CHECKBOX     = 0x33AD4EFA
 CONTROL_PICTURE      = 0x33AD4ED2
 
+# via: https://pastebin.com/aKCyYWfZ
+CONTROL_CLASS        = 0xFCFB3D21  # IClassModuleEvt {FCFB3D21-A0FA-1068-A738-08002B3371B5};
+
+
 
 CONTROL_NAMES = {
     CONTROL_BUTTON: "BUTTON",
@@ -377,6 +381,7 @@ CONTROL_NAMES = {
     CONTROL_OLE: "OLE",
     CONTROL_CHECKBOX: "CHECKBOX",
     CONTROL_PICTURE: "PICTURE",
+    CONTROL_CLASS: "CLASS",
 }
 
 
@@ -751,6 +756,10 @@ CONTROL_EVENTS = {
         "OLECompleteDrag",
         "Validate",
     ],
+    CONTROL_CLASS: [
+        "Initialize",
+        "Terminate",
+    ]
 }
 
 
