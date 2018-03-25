@@ -12,10 +12,8 @@ import logging
 import pefile
 import vstruct
 import capstone
-import argparse
 from vstruct.primitives import *
 
-import analyzer
 
 
 logger = logging.getLogger(__name__)
@@ -1360,71 +1358,3 @@ class VBAnalyzer:
             self.control_name = event['control_name']
             self.event_name = event['event_name']
 
-
-def main(argv=None):
-    if argv is None:
-        argv = sys.argv[1:]
-
-    parser = argparse.ArgumentParser(description="Parse Visual Basic PE files.")
-    parser.add_argument("input", type=str,
-                        help="Path to input file")
-    parser.add_argument("-v", "--verbose", action="store_true",
-                        help="Enable debug logging")
-    parser.add_argument("-q", "--quiet", action="store_true",
-                        help="Disable all output but errors")
-    args = parser.parse_args(args=argv)
-
-    if args.verbose:
-        logging.basicConfig(level=logging.DEBUG)
-        logging.getLogger().setLevel(logging.DEBUG)
-    elif args.quiet:
-        logging.basicConfig(level=logging.ERROR)
-        logging.getLogger().setLevel(logging.ERROR)
-    else:
-        logging.basicConfig(level=logging.INFO)
-        logging.getLogger().setLevel(logging.INFO)
-
-    pe = pefile.PE(args.input)
-    mem = analyzer.PELoader(pe)
-    ana = analyzer.Analyzer(mem)
-    vb = VBAnalyzer(ana)
-
-    header = vb.get_header()
-
-    from pprint import pprint
-    pprint(vb.get_header_strings(header))
-
-    com_reg = vb.get_com_registration(header)
-    pprint(vb.get_com_registration_strings(header, com_reg))
-
-    for imp in vb.find_import_thunks():
-        print('0x{va:08x} {dll}!{api}'.format(**imp))
-
-    project_data = vb.get_project_data(header)
-    obj_table = vb.get_object_table(project_data)
-    proj_data2 = vb.get_project_data2(obj_table)
-    print('objects:')
-    for pub_obj in vb.get_public_object_descriptors(obj_table, proj_data2):
-        obj_name = vb.get_public_object_descriptor_strings(pub_obj)['object_name']
-        print(f'- object: {obj_name}')
-
-        opt_obj_info = vb.get_optional_object_info(pub_obj)
-
-        controls = list(vb.get_object_controls(opt_obj_info))
-        if controls:
-            print('  controls:')
-            for control in controls:
-                control_meta = vb.get_control_meta(control)
-                print('  - {control_name} ({control_type_name})'.format(**control_meta))
-
-                events = list(vb.get_control_events(control))
-                if events:
-                    print('    events:')
-                    for event in events:
-                        print('      - {va:08x} {handler_name}'.format(**event))
-
-    return 0
-
-
-if __name__ == "__main__":
-    sys.exit(main())
