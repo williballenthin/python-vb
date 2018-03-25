@@ -15,14 +15,12 @@ setuptools.setup(
         install_requires=[
             'pefile',
             'hexdump',
+            'hexdump',
+            'unicorn',
             'argparse',
             'capstone',
             'keystone-engine',
-            'unicorn',
-            'six',
-            'pytest',
-            'hexdump',
-            'pytest-cov',
+            'vivisect-vstruct-wb',
             ],
         scripts=[
                  'scripts/vb_info.py',
