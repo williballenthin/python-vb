@@ -38,4 +38,4 @@ pprint(vba.get_header_strings())
   - https://pastebin.com/aKCyYWfZ
   - http://blog.talosintelligence.com/2014/08/discovering-dynamically-loaded-api-in.html
   - https://www.hex-rays.com/products/ida/support/freefiles/vb.idc
-
+  - https://www.vb-decompiler.org/forms_editing.htm
