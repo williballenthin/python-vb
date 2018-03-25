@@ -1,6 +1,0 @@
-pefile
-hexdump
-argparse
-capstone
-keystone
-unicorn
