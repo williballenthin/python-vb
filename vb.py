@@ -1423,11 +1423,6 @@ def main(argv=None):
                     for event in events:
                         print('      - {va:08x} {handler_name}'.format(**event))
 
-    for name, obj in vb.objects.items():
-        for control in obj.controls.values():
-            for event in control.events.values():
-                print(event.handler_name)
-
     return 0
 
 
