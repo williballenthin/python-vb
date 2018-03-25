@@ -1048,7 +1048,7 @@ class VBAnalyzer:
                     continue
                 yield {
                     'dll': dll_name,
-                    'api': api,
+                    'api': api_name,
                 }
             else:
                 logger.warning('unknown external: 0x%x 0x%x', entry.pImportDescriptor, entry.dwEntryType)
