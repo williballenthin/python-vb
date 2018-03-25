@@ -119,7 +119,7 @@ class tagREGDATA(vstruct.VStruct):
         self.bSZProjectName = v_uint32()            # 0x4 bSZProjectName Offset to Project/Typelib Name
         self.bSZHelpDirectory = v_uint32()          # 0x8 bSZHelpDirectory Offset to Help Directory
         self.bSZProjectDescription = v_uint32()     # 0xC bSZProjectDescription Offset to Project Description
-        self.uuidProjectClsId = v_bytes(size=0x10)  # 0x10 uuidProjectClsId CLSID of Project/Typelib
+        self.uuidProjectClsId = GUID()              # 0x10 uuidProjectClsId CLSID of Project/Typelib
         self.dwTlbLcid = v_uint32()                 # 0x20 dwTlbLcid LCID of Type Library
         self.wUnknown = v_uint16()                  # 0x24 wUnknown Might be something. Must check
         self.wTlbVerMajor = v_uint16()              # 0x26 wTlbVerMajor Typelib Major Version
