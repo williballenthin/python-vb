@@ -14,6 +14,7 @@ import vstruct
 import capstone
 from vstruct.primitives import *
 
+import vb.analyzer
 
 
 logger = logging.getLogger(__name__)
@@ -1358,3 +1359,17 @@ class VBAnalyzer:
             self.control_name = event['control_name']
             self.event_name = event['event_name']
 
+
+
+def from_file(path):
+    pe = pefile.PE(path)
+    mem = vb.analyzer.PELoader(pe)
+    ana = vb.analyzer.Analyzer(mem)
+    return vb.VBAnalyzer(ana)
+
+
+def from_buffer(buf):
+    pe = pefile.PE(data=path)
+    mem = vb.analyzer.PELoader(pe)
+    ana = vb.analyzer.Analyzer(mem)
+    return vb.VBAnalyzer(ana)
