@@ -1369,7 +1369,7 @@ def from_file(path):
 
 
 def from_buffer(buf):
-    pe = pefile.PE(data=path)
+    pe = pefile.PE(data=buf)
     mem = vb.analyzer.PELoader(pe)
     ana = vb.analyzer.Analyzer(mem)
     return vb.VBAnalyzer(ana)
