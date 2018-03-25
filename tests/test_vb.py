@@ -78,7 +78,6 @@ def test_com_reg_strings(floki_buf):
     assert strings['project_name'] == 'FlokiIntruder'
 
 
-
 def test_objects(floki_buf):
     vba = vb.from_buffer(floki_buf)
     header = vba.get_header()
