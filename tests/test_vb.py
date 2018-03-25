@@ -76,3 +76,98 @@ def test_com_reg_strings(floki_buf):
     assert strings['help_directory'] == ''
     assert strings['project_description'] == ''
     assert strings['project_name'] == 'FlokiIntruder'
+
+
+
+def test_objects(floki_buf):
+    vba = vb.from_buffer(floki_buf)
+    header = vba.get_header()
+    project_data = vba.get_project_data(header)
+    obj_table = vba.get_object_table(project_data)
+    proj_data2 = vba.get_project_data2(obj_table)
+
+    objects = set([])
+    for pub_obj in vba.get_public_object_descriptors(obj_table, proj_data2):
+        objects.add(vba.get_public_object_descriptor_strings(pub_obj)['object_name'])
+
+    assert objects == {
+        'Form1',
+        'CRijndael',
+        'MdlMain',
+        'modSocketPlus',
+        'UAC',
+        'CSocketPlus'
+    }
+
+
+def test_controls(floki_buf):
+    vba = vb.from_buffer(floki_buf)
+    header = vba.get_header()
+    project_data = vba.get_project_data(header)
+    obj_table = vba.get_object_table(project_data)
+    proj_data2 = vba.get_project_data2(obj_table)
+
+    cnames = set([])
+    for pub_obj in vba.get_public_object_descriptors(obj_table, proj_data2):
+        if vba.get_public_object_descriptor_strings(pub_obj)['object_name'] != 'Form1':
+            continue
+
+        opt_obj_info = vba.get_optional_object_info(pub_obj)
+
+        controls = list(vba.get_object_controls(opt_obj_info))
+        for control in controls:
+            control_meta = vba.get_control_meta(control)
+            cnames.add(control_meta['control_name'])
+
+    assert cnames == {
+        'TimerKeylogger',
+        'SocketDumps',
+        'Form',
+        'Socket',
+        'cmdList',
+        'Timer1',
+        'didList',
+        'SocketKeylogger',
+        'SocketLog',
+        'Timer2',
+        'RefreshTimer'
+    }
+
+
+def test_events(floki_buf):
+    vba = vb.from_buffer(floki_buf)
+    header = vba.get_header()
+    project_data = vba.get_project_data(header)
+    obj_table = vba.get_object_table(project_data)
+    proj_data2 = vba.get_project_data2(obj_table)
+
+    evts = {}
+    for pub_obj in vba.get_public_object_descriptors(obj_table, proj_data2):
+        if vba.get_public_object_descriptor_strings(pub_obj)['object_name'] != 'Form1':
+            continue
+
+        opt_obj_info = vba.get_optional_object_info(pub_obj)
+
+        controls = list(vba.get_object_controls(opt_obj_info))
+        for control in controls:
+            control_meta = vba.get_control_meta(control)
+
+            events = list(vba.get_control_events(control))
+            if not events:
+                continue
+
+            evts[control_meta['control_name']] = {event['handler_name'] for event in events}
+
+    assert evts == {
+        'Form': {'Form_Load'},
+        'RefreshTimer': {'RefreshTimer_Timer'},
+        'Socket': {'Socket_unknown_event0',
+                    'Socket_unknown_event1',
+                    'Socket_unknown_event2'},
+        'SocketDumps': {'SocketDumps_unknown_event0'},
+        'SocketKeylogger': {'SocketKeylogger_unknown_event0'},
+        'SocketLog': {'SocketLog_unknown_event1', 'SocketLog_unknown_event0'},
+        'Timer1': {'Timer1_Timer'},
+        'Timer2': {'Timer2_Timer'},
+        'TimerKeylogger': {'TimerKeylogger_Timer'}
+    }
