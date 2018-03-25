@@ -1,9 +1,24 @@
 
+# python-vb
 
+Analysis and parsing of Visual Basic code from Python.
 
+## getting started
 
+```
+vba = vb.from_file('floki.exe')
+header = vba.get_header()
+pprint(vba.get_header_strings())
+```
 
-references:
+```
+>> project_description: InstallExplorer
+>> project_exe_name: IExplorer
+>> project_help_file:
+>> project_name: FlokiIntruder
+```
+
+## references:
 
   - https://reverseengineering.stackexchange.com/questions/1597/reverse-engineering-a-visual-basic-p-code-binary
   - http://web.archive.org/web/20071020232030/http://www.alex-ionescu.com/vb.pdf (ref: Alex Ionescu)
