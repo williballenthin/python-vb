@@ -1,0 +1,1961 @@
+//Visual Basic runtime objects and procedures
+//Version: 6.0
+VBRUN;
+GUID = {EA544A21-C82D-11D1-A3E4-00A0C90AEA82};
+
+
+//Constants for the PaletteMode property (Form, UserControl, UserDocument, PropertyPage, ActiveX Designer).
+Enum PaletteModeConstants;
+GUID = {531AFF40-D9E9-11CF-B307-00A0C90AEA82};
+  //Use system halftone palette.
+  vbPaletteModeHalftone = 0;
+  //Use palette from topmost control that has a palette.
+  vbPaletteModeUseZOrder = 1;
+  //Use palette specified in Palette property.
+  vbPaletteModeCustom = 2;
+  //Use the container's palette for container's that support ambient Palette property.
+  vbPaletteModeContainer = 3;
+  //Do not use any palette
+  vbPaletteModeNone = 4;
+  //Use the ActiveX Designer's palette.
+  vbPaletteModeObject = 5;
+
+//Constants used for the AsyncRead method
+Enum AsyncTypeConstants;
+GUID = {35239020-BFE5-11CF-B2E4-00A0C90AEA82};
+  //The data is provided in a Picture object.
+  vbAsyncTypePicture = 0;
+  //The data is provided in a file that is created by Visual Basic.
+  vbAsyncTypeFile = 1;
+  //The data is provided as a byte array that contains the retrieved data.  It is assumed that the control author will know how to handle the data.
+  vbAsyncTypeByteArray = 2;
+
+//Options for AsyncRead.  The default behavior is to asynchronously download checking the server version once per-application lifetime. Some constants can be combined.
+Enum AsyncReadConstants;
+GUID = {C6879C62-6FFA-11D1-A3AF-00A0C90AEA82};
+  //AsyncRead will not return until the AsyncReadComplete event has fired.
+  vbAsyncReadSynchronousDownload = 1;
+  //AsyncRead will only use the locally cached resource.
+  vbAsyncReadOfflineOperation = 8;
+  //AsyncRead will force a download of the resource from the server, ignoring any locally cached copy.
+  vbAsyncReadForceUpdate = 16;
+  //AsyncRead will only update the locally cached copy if the server version is newer.
+  vbAsyncReadResynchronize = 512;
+  //AsyncRead will use the cached copy if the server connection is not successful.
+  vbAsyncReadGetFromCacheIfNetFail = 524288;
+
+//Constants used for AsyncProperty.StatusCode property.
+Enum AsyncStatusCodeConstants;
+GUID = {6AA0C551-F895-11D0-B41D-00A0C90AEA82};
+  //An error occured during the asynchronous download.
+  vbAsyncStatusCodeError = 0;
+  //AsyncRead is finding the resource specified in AsyncProperty.Status that holds the storage being downloaded.
+  vbAsyncStatusCodeFindingResource = 1;
+  //AsyncRead is connecting to the resource specified in AsyncProperty.Status that holds the storage being downloaded.
+  vbAsyncStatusCodeConnecting = 2;
+  //AsyncRead has been redirected to a different location specified in AsyncProperty.Status.
+  vbAsyncStatusCodeRedirecting = 3;
+  //AsyncRead has begun receiving data for the storage specified in AsyncProperty.Status.
+  vbAsyncStatusCodeBeginDownloadData = 4;
+  //AsyncRead has received more data for the storage specified in AsyncProperty.Status.
+  vbAsyncStatusCodeDownloadingData = 5;
+  //AsyncRead has finished receiving data for the storage specified in AsyncProperty.Status.
+  vbAsyncStatusCodeEndDownloadData = 6;
+  //AsyncRead is retreiving the requested storage from a cached copy.  AsyncProperty.Status is empty.
+  vbAsyncStatusCodeUsingCachedCopy = 10;
+  //AsyncRead is requesting the storage specified in AsyncProperty.Status.
+  vbAsyncStatusCodeSendingRequest = 11;
+  //The MIME type of the requested storage is specified in AsyncProperty.Status.
+  vbAsyncStatusCodeMIMETypeAvailable = 13;
+  //The file name of the local file cache for requested storage is specified in AsyncProperty.Status.
+  vbAsyncStatusCodeCacheFileNameAvailable = 14;
+  //The AsyncRead will operate synchronously.
+  vbAsyncStatusCodeBeginSyncOperation = 15;
+  //The AsyncRead has completed synchronous operation.
+  vbAsyncStatusCodeEndSyncOperation = 16;
+
+//Constants used for Event Log types
+Enum LogEventTypeConstants;
+GUID = {C983C420-2128-11D0-9440-00A0C90F26F1};
+  //Log an Error Event
+  vbLogEventTypeError = 1;
+  //Log a Warning Event
+  vbLogEventTypeWarning = 2;
+  //Log an Information Event
+  vbLogEventTypeInformation = 4;
+
+//Constants for the UnloadMode parameter of the QueryUnload event of a Form.
+Enum QueryUnloadConstants;
+GUID = {AD4EF4C0-FAC9-11CF-8425-00A0C9110056};
+  //User has chosen Close command from Control menu box on form.
+  vbFormControlMenu = 0;
+  //Unload method invoked from code.
+  vbFormCode = 1;
+  //Current Windows session ending.
+  vbAppWindows = 2;
+  //Windows Task Manager is closing the application.
+  vbAppTaskManager = 3;
+  //MDI child form is closing because the MDI form is closing.
+  vbFormMDIForm = 4;
+  //The owner of the form is closing.
+  vbFormOwner = 5;
+
+//Constants for the ZOrder method.
+Enum ZOrderConstants;
+GUID = {AD4EF4C1-FAC9-11CF-8425-00A0C9110056};
+  //Bring to front (ZOrder method).
+  vbBringToFront = 0;
+  //Send to back (ZOrder method).
+  vbSendToBack = 1;
+
+//Shift parameter constants (bitfields for the Shift parameter of various events).
+Enum ShiftConstants;
+GUID = {AD4EF4C2-FAC9-11CF-8425-00A0C9110056};
+  //Shift key bit mask.
+  vbShiftMask = 1;
+  //Ctrl key bit mask.
+  vbCtrlMask = 2;
+  //Alt key bit mask.
+  vbAltMask = 4;
+
+//Mouse button bitfield constants.
+Enum MouseButtonConstants;
+GUID = {AD4EF4C3-FAC9-11CF-8425-00A0C9110056};
+  //Left mouse button.
+  vbLeftButton = 1;
+  //Right mouse button.
+  vbRightButton = 2;
+  //Middle mouse button.
+  vbMiddleButton = 4;
+
+//Application start mode constants.
+Enum ApplicationStartConstants;
+GUID = {AD4EF4C4-FAC9-11CF-8425-00A0C9110056};
+  //Stand-alone application (Application start mode).
+  vbSModeStandalone = 0;
+  //Automation server (Application start mode).
+  vbSModeAutomation = 1;
+
+//Scrollbar property constants.
+Enum ScrollBarConstants;
+GUID = {AD4EF4C5-FAC9-11CF-8425-00A0C9110056};
+  //No scroll bar.
+  vbSBNone = 0;
+  //Horizontal scroll bar.
+  vbHorizontal = 1;
+  //Vertical scroll bar.
+  vbVertical = 2;
+  //Both horizontal and vertical scroll bars.
+  vbBoth = 3;
+
+//Constants for the Shape property of the Shape control.
+Enum ShapeConstants;
+GUID = {AD4EF4C6-FAC9-11CF-8425-00A0C9110056};
+  //Rectangle shape.
+  vbShapeRectangle = 0;
+  //Square shape.
+  vbShapeSquare = 1;
+  //Oval shape.
+  vbShapeOval = 2;
+  //Circle shape.
+  vbShapeCircle = 3;
+  //Rounded rectangle shape.
+  vbShapeRoundedRectangle = 4;
+  //Rounded square shape.
+  vbShapeRoundedSquare = 5;
+
+//Picture Object type constants.
+Enum PictureTypeConstants;
+GUID = {AD4EF4C7-FAC9-11CF-8425-00A0C9110056};
+  //None (empty) type of picture object.
+  vbPicTypeNone = 0;
+  //Bitmap type of picture object.
+  vbPicTypeBitmap = 1;
+  //Metafile type of picture object.
+  vbPicTypeMetafile = 2;
+  //Icon type of picture object.
+  vbPicTypeIcon = 3;
+  //Enhanced metafile type of picture object.
+  vbPicTypeEMetafile = 4;
+
+//Constants for the Style property of a ComboBox control.
+Enum ComboBoxConstants;
+GUID = {AD4EF4C8-FAC9-11CF-8425-00A0C9110056};
+  //ComboBox control style that allows typing in a text box or selection from a drop-down list.
+  vbComboDropdown = 0;
+  //ComboBox control style that allows typing in a text box or selection from a list, which doesn't drop down.
+  vbComboSimple = 1;
+  //Only allows selection from the drop-down list in a ComboBox control.
+  vbComboDropdownList = 2;
+
+//Constants for the MultiSelect property of a ListBox.
+Enum MultiSelectConstants;
+GUID = {AD4EF4C9-FAC9-11CF-8425-00A0C9110056};
+  //Doesn't allow multiple selections in the list of a ListBox control.
+  vbMultiSelectNone = 0;
+  //Allows clicking the mouse or pressing the SPACEBAR to select or deselect an item in a ListBox control. (Arrow keys move the focus.)
+  vbMultiSelectSimple = 1;
+  //Allows multiple-item selection in a ListBox control list. (CTRL+Click selects/deselects individual items. Click on the first item in a group and SHIFT+Click on the last item selects all items in the group.)
+  vbMultiSelectExtended = 2;
+
+//Data control error event constants.
+Enum DataErrorConstants;
+GUID = {AD4EF4CA-FAC9-11CF-8425-00A0C9110056};
+  //Continue (Error event).
+  vbDataErrContinue = 0;
+  //Display the message (Error event, default).
+  vbDataErrDisplay = 1;
+
+//Data control validate event action constants.
+Enum DataValidateConstants;
+GUID = {AD4EF4CB-FAC9-11CF-8425-00A0C9110056};
+  //Cancel the operation when the Sub exits (Validate event).
+  vbDataActionCancel = 0;
+  //MoveFirst method (Validate event).
+  vbDataActionMoveFirst = 1;
+  //MovePrevious method (Validate event).
+  vbDataActionMovePrevious = 2;
+  //MoveNext method (Validate event).
+  vbDataActionMoveNext = 3;
+  //MoveLast method (Validate event).
+  vbDataActionMoveLast = 4;
+  //AddNew method (Validate event).
+  vbDataActionAddNew = 5;
+  //Update operation -- not update record (Validate event).
+  vbDataActionUpdate = 6;
+  //Delete method (Validate event).
+  vbDataActionDelete = 7;
+  //Find method (Validate event).
+  vbDataActionFind = 8;
+  //The Bookmark property has been set.
+  vbDataActionBookmark = 9;
+  //Close method (Validate event).
+  vbDataActionClose = 10;
+  //The form is being unloaded.
+  vbDataActionUnload = 11;
+
+//Data control beginning-of-file constants.
+Enum DataBOFconstants;
+GUID = {AD4EF4CC-FAC9-11CF-8425-00A0C9110056};
+  //Move to first record.
+  vbMoveFirst = 0;
+  //Move to beginning of file.
+  vbBOF = 1;
+
+//Data control end-of-file constants.
+Enum DataEOFConstants;
+GUID = {AD4EF4CD-FAC9-11CF-8425-00A0C9110056};
+  //Move to last record.
+  vbMoveLast = 0;
+  //Move to end of file.
+  vbEOF = 1;
+  //Add new record to end of file.
+  vbAddNew = 2;
+
+//Data control Recordset-type constants.
+Module RecordsetTypeConstants;
+  //Table type recordset.
+  vbRSTypeTable = 0;
+  //Dynaset type recordset.
+  vbRSTypeDynaset = 1;
+  //Snapshot type recordset.
+  vbRSTypeSnapShot = 2;
+
+//Cursor Driver-type constants.
+Enum DefaultCursorTypeConstants;
+GUID = {DFC5C6E0-08F1-11D0-A365-00A0C90F26FA};
+  //The ODBC driver will choose the appropriate style of cursors. Server-side cursors are used if they are available.
+  vbUseDefaultCursor = 0;
+  //Use the ODBC cursor library.
+  vbUseODBCCursor = 1;
+  //Use server-side cursors.
+  vbUseServersideCursor = 2;
+
+//Variant type constants.
+Enum VariantTypeConstants;
+GUID = {AD4EF4CE-FAC9-11CF-8425-00A0C9110056};
+  //Empty (uninitialized) data type.
+  vbVEmpty = 0;
+  //Null (no valid data) data type.
+  vbVNull = 1;
+  //Integer data type.
+  vbVInteger = 2;
+  //Long integer data type.
+  vbVLong = 3;
+  //Single-precision floating-point data type.
+  vbVSingle = 4;
+  //Double-precision floating-point data type.
+  vbVDouble = 5;
+  //Currency (scaled integer) data type.
+  vbVCurrency = 6;
+  //Date data type.
+  vbVDate = 7;
+  //String data type.
+  vbVString = 8;
+
+//DDE LinkError event constants.
+Enum LinkErrorConstants;
+GUID = {AD4EF4D0-FAC9-11CF-8425-00A0C9110056};
+  //Another application requested data in wrong format.
+  vbWrongFormat = 1;
+  //Destination application attempted to continue after source closed.
+  vbDDESourceClosed = 6;
+  //All source links are in use.
+  vbTooManyLinks = 7;
+  //Failure to update data in destination control.
+  vbDataTransferFailed = 8;
+
+//Constants for the LinkMode property.
+Enum LinkModeConstants;
+GUID = {1791AB32-2F5A-11CE-8259-00AA006138F9};
+  //No DDE interaction.
+  vbLinkNone = 0;
+  //Control is source of data in a DDE conversation.
+  vbLinkSource = 1;
+  //Control is updated each time linked data changes in a DDE conversation.
+  vbLinkAutomatic = 1;
+  //Control is updated only when the LinkRequest method is invoked.
+  vbLinkManual = 2;
+  //A LinkNotify event occurs when linked data changes.
+  vbLinkNotify = 3;
+
+//Old constants for the LinkMode property (used for Visual Basic 1.0 compatibility).
+Enum OldLinkModeConstants;
+GUID = {AD4EF4D1-FAC9-11CF-8425-00A0C9110056};
+  //Hot LinkMode (used for Visual Basic 1.0 compatibility).
+  vbHot = 1;
+  //Server LinkMode (used for Visual Basic 1.0 compatibility).
+  vbServer = 1;
+  //Cold LinkMode (used for Visual Basic 1.0 compatibility).
+  vbCold = 2;
+
+//Clipboard format constants.
+Enum ClipBoardConstants;
+GUID = {AD4EF4D2-FAC9-11CF-8425-00A0C9110056};
+  //DDE conversation information.
+  vbCFLink = -16640;
+  //Text (.TXT file).
+  vbCFText = 1;
+  //Bitmap (.BMP file).
+  vbCFBitmap = 2;
+  //Metafile (.WMF file).
+  vbCFMetafile = 3;
+  //Device-independent bitmap.
+  vbCFDIB = 8;
+  //Color palette.
+  vbCFPalette = 9;
+  //Enhanced metafile (.EMF file).
+  vbCFEMetafile = 14;
+  //Filename list (Microsoft Windows Explorer)
+  vbCFFiles = 15;
+  //Rich Text Format (.RTF file).
+  vbCFRTF = -16639;
+
+//State transition constants for the DragOver and OLEDragOver events.
+Enum DragOverConstants;
+GUID = {AD4EF4D3-FAC9-11CF-8425-00A0C9110056};
+  //Source control dragged into target.
+  vbEnter = 0;
+  //Source control dragged out of target.
+  vbLeave = 1;
+  //Source control dragged from one position in target to another.
+  vbOver = 2;
+
+//Constants for the Drag method.
+Enum DragConstants;
+GUID = {AD4EF4D4-FAC9-11CF-8425-00A0C9110056};
+  //Cancel drag operation.
+  vbCancel = 0;
+  //Begin dragging control.
+  vbBeginDrag = 1;
+  //Drop control.
+  vbEndDrag = 2;
+
+//Constants for the DragMode property (but not the OLEDragMode or OLEDropMode properties).
+Enum DragModeConstants;
+GUID = {1791AB34-2F5A-11CE-8259-00AA006138F9};
+  //Manual drag mode.
+  vbManual = 0;
+  //Automatic drag mode.
+  vbAutomatic = 1;
+
+//Drop effect constants for OLE drag and drop events.
+Enum OLEDropEffectConstants;
+GUID = {AD4EF4D5-FAC9-11CF-8425-00A0C9110056};
+  //No OLE drag/drop operation has taken place/would take place.
+  vbDropEffectNone = 0;
+  //A mask to indicate that a copy has taken place/would take place.
+  vbDropEffectCopy = 1;
+  //A mask to indicate that a move has take place/would take place.
+  vbDropEffectMove = 2;
+  //A mask to indicate that the drop target window has scrolled/would scroll.
+  vbDropEffectScroll = -2147483648;
+
+//Constants for the OLEDragMode property (but not the DragMode or OLEDropMode properties).
+Enum OLEDragConstants;
+GUID = {AD4EF4D6-FAC9-11CF-8425-00A0C9110056};
+  //OLE drag/drop will be initialized only under programmatic control.
+  vbOLEDragManual = 0;
+  //OLE drag/drop will be initialized when the user drags 'out' of the control, or under programmatic control.
+  vbOLEDragAutomatic = 1;
+
+//Constants for the OLEDropMode property (but not the DragMode or OLEDragMode properties).
+Enum OLEDropConstants;
+GUID = {AD4EF4D7-FAC9-11CF-8425-00A0C9110056};
+  //Accepts no OLE drag/drop operations.
+  vbOLEDropNone = 0;
+  //Accepts an OLE drag/drop under programmatic control only.
+  vbOLEDropManual = 1;
+  //Accepts an OLE drag/drop without programmatic control.
+  vbOLEDropAutomatic = 2;
+
+//Constants for a Form's Show method.
+Enum FormShowConstants;
+GUID = {AD4EF4D8-FAC9-11CF-8425-00A0C9110056};
+  //Modeless form.
+  vbModeless = 0;
+  //Modal form.
+  vbModal = 1;
+
+//Constants for the Arrange method for MDI forms.
+Enum FormArrangeConstants;
+GUID = {AD4EF4D9-FAC9-11CF-8425-00A0C9110056};
+  //Cascade all non-minimized MDI child forms.
+  vbCascade = 0;
+  //Horizontally tile all non-minimized MDI child forms.
+  vbTileHorizontal = 1;
+  //Vertically tile all non-minimized MDI child forms.
+  vbTileVertical = 2;
+  //Arrange icons for minimized MDI child forms.
+  vbArrangeIcons = 3;
+
+//Form WindowState property constants.
+Enum FormWindowStateConstants;
+GUID = {F9C75340-5F26-11CE-95F0-00AA0051E510};
+  //Normal window state.
+  vbNormal = 0;
+  //Minimized window state.
+  vbMinimized = 1;
+  //Maximized window state.
+  vbMaximized = 2;
+
+//Keycode constants.
+Enum KeyCodeConstants;
+GUID = {AD4EF4DA-FAC9-11CF-8425-00A0C9110056};
+  //Left mouse button
+  vbKeyLButton = 1;
+  //Right mouse button.
+  vbKeyRButton = 2;
+  //Cancel key.
+  vbKeyCancel = 3;
+  //Middle mouse button.
+  vbKeyMButton = 4;
+  //Backspace key.
+  vbKeyBack = 8;
+  //Tab key.
+  vbKeyTab = 9;
+  //Clear key.
+  vbKeyClear = 12;
+  //Return (Enter) key.
+  vbKeyReturn = 13;
+  //Shift key.
+  vbKeyShift = 16;
+  //Ctrl key.
+  vbKeyControl = 17;
+  //Menu key.
+  vbKeyMenu = 18;
+  //Pause key.
+  vbKeyPause = 19;
+  //Caps key.
+  vbKeyCapital = 20;
+  //Esc key.
+  vbKeyEscape = 27;
+  //Spacebar key.
+  vbKeySpace = 32;
+  //PAGE UP key.
+  vbKeyPageUp = 33;
+  //PAGE DOWN key.
+  vbKeyPageDown = 34;
+  //End key.
+  vbKeyEnd = 35;
+  //Home key.
+  vbKeyHome = 36;
+  //Left key.
+  vbKeyLeft = 37;
+  //Up key.
+  vbKeyUp = 38;
+  //Right key.
+  vbKeyRight = 39;
+  //Down key.
+  vbKeyDown = 40;
+  //Select key.
+  vbKeySelect = 41;
+  //PrintScreen key.
+  vbKeyPrint = 42;
+  //Execute key.
+  vbKeyExecute = 43;
+  //Snapshot key.
+  vbKeySnapshot = 44;
+  //Insert key.
+  vbKeyInsert = 45;
+  //Delete key.
+  vbKeyDelete = 46;
+  //Help key.
+  vbKeyHelp = 47;
+  //Num Lock key.
+  vbKeyNumlock = 144;
+  //Scroll Lock key.
+  vbKeyScrollLock = 145;
+  //A key.
+  vbKeyA = 65;
+  //B key.
+  vbKeyB = 66;
+  //C key.
+  vbKeyC = 67;
+  //D key.
+  vbKeyD = 68;
+  //E key.
+  vbKeyE = 69;
+  //F key.
+  vbKeyF = 70;
+  //G key.
+  vbKeyG = 71;
+  //H key.
+  vbKeyH = 72;
+  //I key.
+  vbKeyI = 73;
+  //J key.
+  vbKeyJ = 74;
+  //K key.
+  vbKeyK = 75;
+  //L key.
+  vbKeyL = 76;
+  //M key.
+  vbKeyM = 77;
+  //N key.
+  vbKeyN = 78;
+  //O key.
+  vbKeyO = 79;
+  //P key.
+  vbKeyP = 80;
+  //Q key.
+  vbKeyQ = 81;
+  //R key.
+  vbKeyR = 82;
+  //S key.
+  vbKeyS = 83;
+  //T key.
+  vbKeyT = 84;
+  //U key.
+  vbKeyU = 85;
+  //V key.
+  vbKeyV = 86;
+  //W key.
+  vbKeyW = 87;
+  //X key.
+  vbKeyX = 88;
+  //Y key.
+  vbKeyY = 89;
+  //Z key.
+  vbKeyZ = 90;
+  //0 key.
+  vbKey0 = 48;
+  //1 key.
+  vbKey1 = 49;
+  //2 key.
+  vbKey2 = 50;
+  //3 key.
+  vbKey3 = 51;
+  //4 key.
+  vbKey4 = 52;
+  //5 key.
+  vbKey5 = 53;
+  //6 key.
+  vbKey6 = 54;
+  //7 key.
+  vbKey7 = 55;
+  //8 key.
+  vbKey8 = 56;
+  //9 key.
+  vbKey9 = 57;
+  //0 key on the numeric keypad.
+  vbKeyNumpad0 = 96;
+  //1 key on the numeric keypad.
+  vbKeyNumpad1 = 97;
+  //2 key on the numeric keypad.
+  vbKeyNumpad2 = 98;
+  //3 key on the numeric keypad.
+  vbKeyNumpad3 = 99;
+  //4 key on the numeric keypad.
+  vbKeyNumpad4 = 100;
+  //5 key on the numeric keypad.
+  vbKeyNumpad5 = 101;
+  //6 key on the numeric keypad.
+  vbKeyNumpad6 = 102;
+  //7 key on the numeric keypad.
+  vbKeyNumpad7 = 103;
+  //8 key on the numeric keypad.
+  vbKeyNumpad8 = 104;
+  //9 key on the numeric keypad.
+  vbKeyNumpad9 = 105;
+  //Multiply (*) key on the numeric keypad.
+  vbKeyMultiply = 106;
+  //Plus (+) key on the numeric keypad.
+  vbKeyAdd = 107;
+  //Enter key on the numeric keypad.
+  vbKeySeparator = 108;
+  //Minus (-) key on the numeric keypad.
+  vbKeySubtract = 109;
+  //Decimal (.) key on the numeric keypad.
+  vbKeyDecimal = 110;
+  //Divide (/) key on the numeric keypad.
+  vbKeyDivide = 111;
+  //F1 key.
+  vbKeyF1 = 112;
+  //F2 key.
+  vbKeyF2 = 113;
+  //F3 key.
+  vbKeyF3 = 114;
+  //F4 key.
+  vbKeyF4 = 115;
+  //F5 key.
+  vbKeyF5 = 116;
+  //F6 key.
+  vbKeyF6 = 117;
+  //F7 key.
+  vbKeyF7 = 118;
+  //F8 key.
+  vbKeyF8 = 119;
+  //F9 key.
+  vbKeyF9 = 120;
+  //F10 key.
+  vbKeyF10 = 121;
+  //F11 key.
+  vbKeyF11 = 122;
+  //F12 key.
+  vbKeyF12 = 123;
+  //F13 key.
+  vbKeyF13 = 124;
+  //F14 key.
+  vbKeyF14 = 125;
+  //F15 key.
+  vbKeyF15 = 126;
+  //F16 key.
+  vbKeyF16 = 127;
+
+//User-defined shortcut keystrokes
+Enum MenuAccelConstants;
+GUID = {AD4EF4DB-FAC9-11CF-8425-00A0C9110056};
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlA = 1;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlB = 2;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlC = 3;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlD = 4;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlE = 5;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlF = 6;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlG = 7;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlH = 8;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlI = 9;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlJ = 10;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlK = 11;
+
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlL = 12;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlM = 13;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlN = 14;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlO = 15;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlP = 16;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlQ = 17;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlR = 18;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlS = 19;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlT = 20;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlU = 21;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlV = 22;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlW = 23;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlX = 24;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlY = 25;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlZ = 26;
+  //User-defined shortcut keystrokes
+  vbMenuAccelF1 = 27;
+  //User-defined shortcut keystrokes
+  vbMenuAccelF2 = 28;
+  //User-defined shortcut keystrokes
+  vbMenuAccelF3 = 29;
+  //User-defined shortcut keystrokes
+  vbMenuAccelF4 = 30;
+  //User-defined shortcut keystrokes
+  vbMenuAccelF5 = 31;
+  //User-defined shortcut keystrokes
+  vbMenuAccelF6 = 32;
+  //User-defined shortcut keystrokes
+  vbMenuAccelF7 = 33;
+  //User-defined shortcut keystrokes
+  vbMenuAccelF8 = 34;
+  //User-defined shortcut keystrokes
+  vbMenuAccelF9 = 35;
+  //User-defined shortcut keystrokes
+  vbMenuAccelF11 = 36;
+  //User-defined shortcut keystrokes
+  vbMenuAccelF12 = 37;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlF1 = 38;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlF2 = 39;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlF3 = 40;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlF4 = 41;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlF5 = 42;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlF6 = 43;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlF7 = 44;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlF8 = 45;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlF9 = 46;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlF11 = 47;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlF12 = 48;
+  //User-defined shortcut keystrokes
+  vbMenuAccelShiftF1 = 49;
+  //User-defined shortcut keystrokes
+  vbMenuAccelShfitF2 = 50;
+  //User-defined shortcut keystrokes
+  vbMenuAccelShiftF3 = 51;
+  //User-defined shortcut keystrokes
+  vbMenuAccelShiftF4 = 52;
+  //User-defined shortcut keystrokes
+  vbMenuAccelShiftF5 = 53;
+  //User-defined shortcut keystrokes
+  vbMenuAccelShiftF6 = 54;
+  //User-defined shortcut keystrokes
+  vbMenuAccelShiftF7 = 55;
+  //User-defined shortcut keystrokes
+  vbMenuAccelShiftF8 = 56;
+  //User-defined shortcut keystrokes
+  vbMenuAccelShiftF9 = 57;
+  //User-defined shortcut keystrokes
+  vbMenuAccelShiftF11 = 58;
+  //User-defined shortcut keystrokes
+  vbMenuAccelShiftF12 = 59;
+  //User-defined shortcut keystrokes
+  vbMenuAccelShiftCtrlF1 = 60;
+  //User-defined shortcut keystrokes
+  vbMenuAccelShiftCtrlF2 = 61;
+  //User-defined shortcut keystrokes
+  vbMenuAccelShiftCtrlF3 = 62;
+  //User-defined shortcut keystrokes
+  vbMenuAccelShiftCtrlF4 = 63;
+  //User-defined shortcut keystrokes
+  vbMenuAccelShiftCtrlF5 = 64;
+  //User-defined shortcut keystrokes
+  vbMenuAccelShiftCtrlF6 = 65;
+  //User-defined shortcut keystrokes
+  vbMenuAccelShiftCtrlF7 = 66;
+  //User-defined shortcut keystrokes
+  vbMenuAccelShiftCtrlF8 = 67;
+  //User-defined shortcut keystrokes
+  vbMenuAccelShiftCtrlF9 = 68;
+  //User-defined shortcut keystrokes
+  vbMenuAccelShiftCtrlF11 = 69;
+  //User-defined shortcut keystrokes
+  vbMenuAccelShiftCtrlF12 = 70;
+  //User-defined shortcut keystrokes
+  vbMenuAccelCtrlIns = 71;
+  //User-defined shortcut keystrokes
+  vbMenuAccelShiftIns = 72;
+  //User-defined shortcut keystrokes
+  vbMenuAccelDel = 73;
+  //User-defined shortcut keystrokes
+  vbMenuAccelShiftDel = 74;
+  //User-defined shortcut keystrokes
+  vbMenuAccelAltBksp = 75;
+
+//Color constants (see also SystemColorConstants).
+Enum ColorConstants;
+GUID = {AD4EF4DC-FAC9-11CF-8425-00A0C9110056};
+  //Black.
+  vbBlack = 0;
+  //Red.
+  vbRed = 255;
+  //Green.
+  vbGreen = 65280;
+  //Yellow.
+  vbYellow = 65535;
+  //Blue.
+  vbBlue = 16711680;
+  //Magenta.
+  vbMagenta = 16711935;
+  //Cyan.
+  vbCyan = 16776960;
+  //White.
+  vbWhite = 16777215;
+
+//System color constants (see also ColorConstants).
+Enum SystemColorConstants;
+GUID = {AD4EF4DD-FAC9-11CF-8425-00A0C9110056};
+  //Scroll-bars gray area color.
+  vbScrollBars = -2147483648;
+  //Desktop color.
+  vbDesktop = -2147483647;
+  //Active window caption color.
+  vbActiveTitleBar = -2147483646;
+  //Inactive window caption color.
+  vbInactiveTitleBar = -2147483645;
+  //Menu background color.
+  vbMenuBar = -2147483644;
+  //Window background color.
+  vbWindowBackground = -2147483643;
+  //Window frame color.
+  vbWindowFrame = -2147483642;
+  //Text color in menus.
+  vbMenuText = -2147483641;
+  //Text color in windows.
+  vbWindowText = -2147483640;
+  //Text color in active caption, size box, scroll-bar arrow box.
+  vbTitleBarText = -2147483639;
+  //Active window border color.
+  vbActiveBorder = -2147483638;
+  //Inactive window border color.
+  vbInactiveBorder = -2147483637;
+  //Background color of multiple document interface (MDI) applications.
+  vbApplicationWorkspace = -2147483636;
+  //Background color of items selected in a control.
+  vbHighlight = -2147483635;
+  //Text color of items selected in a control.
+  vbHighlightText = -2147483634;
+  //Face shading on command buttons.
+  vbButtonFace = -2147483633;
+  //Edge shading on command buttons.
+  vbButtonShadow = -2147483632;
+  //Grayed (disabled) text.
+  vbGrayText = -2147483631;
+  //Text color on push buttons.
+  vbButtonText = -2147483630;
+  //Text color in active caption, size box, scroll-bar arrow box.
+  vbActiveTitleBarText = -2147483639;
+  //Text color in inactive window caption, size box, scroll-bar arrow box.
+  vbInactiveTitleBarText = -2147483629;
+  //Color of text in an inactive caption.
+  vbInactiveCaptionText = -2147483629;
+  //Highlight color for 3D display elements.
+  vb3DHighlight = -2147483628;
+  //Dark shadow color for three-dimensional display elements.
+  vb3DFace = -2147483633;
+  //Color of automatic window shadows.
+  vb3DShadow = -2147483632;
+  //Darkest shadow.
+  vb3DDKShadow = -2147483627;
+  //Second lightest of the 3D colors after vb3DHilight.
+  vb3DLight = -2147483626;
+  //Color of text in ToolTips.
+  vbInfoText = -2147483625;
+  //Background color of ToolTips.
+  vbInfoBackground = -2147483624;
+
+//Constants for the Align property.
+Enum AlignConstants;
+GUID = {1791AB33-2F5A-11CE-8259-00AA006138F9};
+  //Size and location set at design time or in code.
+  vbAlignNone = 0;
+  //Control at top of form (Align).
+  vbAlignTop = 1;
+  //Control at bottom of form (Align).
+  vbAlignBottom = 2;
+  //Control at left of form (Align).
+  vbAlignLeft = 3;
+  //Control at right of form (Align).
+  vbAlignRight = 4;
+
+//Constants for the Alignment property.
+Enum AlignmentConstants;
+GUID = {AD4EF4DE-FAC9-11CF-8425-00A0C9110056};
+  //Left justify (Alignment).
+  vbLeftJustify = 0;
+  //Right justify (Alignment).
+  vbRightJustify = 1;
+  //Center (Alignment).
+  vbCenter = 2;
+
+//Form BorderStyle property constants.
+Enum FormBorderStyleConstants;
+GUID = {F9C75341-5F26-11CE-95F0-00AA0051E510};
+  //No border
+  vbBSNone = 0;
+  //Fixed single (form BorderStyle).
+  vbFixedSingle = 1;
+  //Sizable (form BorderStyle).
+  vbSizable = 2;
+  //Fixed double (same as vbFixedDialog).
+  vbFixedDouble = 3;
+  //Fixed dialog (form BorderStyle).
+  vbFixedDialog = 3;
+  //Fixed Toolwindow (form BorderStyle).
+  vbFixedToolWindow = 4;
+  //Sizable Toolwindow (form BorderStyle).
+  vbSizableToolWindow = 5;
+
+//Constants for the BorderStyle property of controls (not Forms).
+Enum BorderStyleConstants;
+GUID = {AD4EF4DF-FAC9-11CF-8425-00A0C9110056};
+
+  //Transparent (shape and line BorderStyle).
+  vbTransparent = 0;
+  //Solid (shape and line BorderStyle).
+  vbBSSolid = 1;
+  //Dash (shape and line BorderStyle).
+  vbBSDash = 2;
+  //Dot (shape and line BorderStyle).
+  vbBSDot = 3;
+  //Dash-dot (shape and line BorderStyle).
+  vbBSDashDot = 4;
+  //Dash-dot-dot (shape and line BorderStyle).
+  vbBSDashDotDot = 5;
+  //Inside solid (shape and line BorderStyle).
+  vbBSInsideSolid = 6;
+
+//MousePointer property constants.
+Enum MousePointerConstants;
+GUID = {AD4EF4E0-FAC9-11CF-8425-00A0C9110056};
+  //Default (MousePointer).
+  vbDefault = 0;
+  //Arrow mouse pointer.
+  vbArrow = 1;
+  //Cross mouse pointer.
+  vbCrosshair = 2;
+  //I-Beam mouse pointer.
+  vbIbeam = 3;
+  //Icon mouse pointer.
+  vbIconPointer = 4;
+  //Size mouse pointer.
+  vbSizePointer = 5;
+  //Size NE SW mouse pointer.
+  vbSizeNESW = 6;
+  //Size N S mouse pointer.
+  vbSizeNS = 7;
+  //Size NW SE mouse pointer.
+  vbSizeNWSE = 8;
+  //Size W E mouse pointer.
+  vbSizeWE = 9;
+  //Up arrow mouse pointer.
+  vbUpArrow = 10;
+  //Hourglass mouse pointer.
+  vbHourglass = 11;
+  //No drop mouse pointer.
+  vbNoDrop = 12;
+  //Arrow and hourglass.
+  vbArrowHourglass = 13;
+  //Arrow and question mark.
+  vbArrowQuestion = 14;
+  //Size all.
+  vbSizeAll = 15;
+  //Custom mouse pointer icon specified by the MouseIcon property.
+  vbCustom = 99;
+
+//DrawMode property constants.
+Enum DrawModeConstants;
+GUID = {AD4EF4E1-FAC9-11CF-8425-00A0C9110056};
+  //Black (DrawMode).
+  vbBlackness = 1;
+  //Not Merge Pen (DrawMode).
+  vbNotMergePen = 2;
+  //Mask Not Pen (DrawMode).
+  vbMaskNotPen = 3;
+  //Not Copy Pen (DrawMode).
+  vbNotCopyPen = 4;
+  //Mask Pen Not (DrawMode).
+  vbMaskPenNot = 5;
+  //Invert (DrawMode).
+  vbInvert = 6;
+  //Xor Pen (DrawMode).
+  vbXorPen = 7;
+  //Not Mask Pen (DrawMode).
+  vbNotMaskPen = 8;
+  //Mask Pen (DrawMode).
+  vbMaskPen = 9;
+  //Not Xor Pen (DrawMode).
+  vbNotXorPen = 10;
+  //No operation - output remains unchanged (DrawMode).
+  vbNop = 11;
+  //Merge Not Pen (DrawMode).
+  vbMergeNotPen = 12;
+  //Copy Pen (DrawMode).
+  vbCopyPen = 13;
+  //Merge Pen Not (DrawMode).
+  vbMergePenNot = 14;
+  //Merge Pen (DrawMode).
+  vbMergePen = 15;
+  //White (DrawMode).
+  vbWhiteness = 16;
+
+//StartUpPosition property constants
+Enum StartUpPositionConstants;
+GUID = {4BAE98E0-29DA-11D0-A369-00A0C90F26FA};
+  //Startup position will be set using Top and Left properties
+  vbStartUpManual = 0;
+  //Startup position will be centered on the owner window
+  vbStartUpOwner = 1;
+  //Startup position will be centered on the screen
+  vbStartUpScreen = 2;
+  //Startup position will use Windows default location
+  vbStartUpWindowsDefault = 3;
+
+//DrawStyle property constants.
+Enum DrawStyleConstants;
+GUID = {AD4EF4E2-FAC9-11CF-8425-00A0C9110056};
+  //Solid (DrawStyle).
+  vbSolid = 0;
+  //Dash (DrawStyle).
+  vbDash = 1;
+  //Dot (DrawStyle).
+  vbDot = 2;
+  //Dash-dot (DrawStyle).
+  vbDashDot = 3;
+  //Dash-dot-dot (DrawStyle).
+  vbDashDotDot = 4;
+  //Invisible (DrawStyle).
+  vbInvisible = 5;
+  //Inside solid (DrawStyle).
+  vbInsideSolid = 6;
+
+//FillStyle property constants.
+Enum FillStyleConstants;
+GUID = {AD4EF4E3-FAC9-11CF-8425-00A0C9110056};
+  //Solid (FillStyle).
+  vbFSSolid = 0;
+  //Transparent (FillStyle).
+  vbFSTransparent = 1;
+  //Horizontal line (FillStyle).
+  vbHorizontalLine = 2;
+  //Vertical line (FillStyle).
+  vbVerticalLine = 3;
+  //Upward diagonal (FillStyle).
+  vbUpwardDiagonal = 4;
+  //Downward diagonal (FillStyle).
+  vbDownwardDiagonal = 5;
+  //Cross (FillStyle).
+  vbCross = 6;
+  //Diagonal cross (FillStyle).
+  vbDiagonalCross = 7;
+
+//ScaleMode property constants.
+Enum ScaleModeConstants;
+GUID = {AD4EF4E4-FAC9-11CF-8425-00A0C9110056};
+  //User (ScaleMode).
+  vbUser = 0;
+  //Twip (ScaleMode).
+  vbTwips = 1;
+  //Point (ScaleMode).
+  vbPoints = 2;
+  //Pixel (ScaleMode).
+  vbPixels = 3;
+  //Character (ScaleMode).
+  vbCharacters = 4;
+  //Inch (ScaleMode).
+  vbInches = 5;
+  //Millimeter (ScaleMode).
+  vbMillimeters = 6;
+  //Centimeter (ScaleMode).
+  vbCentimeters = 7;
+  //Himetric (ScaleMode).
+  vbHimetric = 8;
+  //Units used by the control's container to determine the control's position (ScaleX/ScaleY method, UserControl only)
+  vbContainerPosition = 9;
+  //Units used by the control's container to determine the control's size (ScaleX/ScaleY method, UserControl only)
+  vbContainerSize = 10;
+
+//Miscellaneous OLE container control properties.
+Enum OLEContainerConstants;
+GUID = {AD4EF4E5-FAC9-11CF-8425-00A0C9110056};
+  //OLE container control contains a linked object.
+  vbOLELinked = 0;
+  //OLE container control contains an embedded object.
+  vbOLEEmbedded = 1;
+  //OLE container control does not contain an object.
+  vbOLENone = 3;
+  //OLE container control can contain either a linked or an embedded object.
+  vbOLEEither = 2;
+  //Object is updated each time the linked data changes.
+  vbOLEAutomatic = 0;
+  //Object is updated whenever the user saves the linked document.
+  vbOLEFrozen = 1;
+  //Object is updated only when the Action property is set to 6 (Update).
+  vbOLEManual = 2;
+  //OLE object is not automatically activated.
+  vbOLEActivateManual = 0;
+  //Object is activated when the OLE container control gets the focus.
+  vbOLEActivateGetFocus = 1;
+  //Object is activated when the OLE container control is double-clicked.
+  vbOLEActivateDoubleclick = 2;
+  //Object is activated based on the object's preferred method of activation.
+  vbOLEActivateAuto = 3;
+  //Object's image is clipped by the OLE container control's borders.
+  vbOLESizeClip = 0;
+  //Object's image is sized to fill the OLE container control.
+  vbOLESizeStretch = 1;
+  //OLE container control is automatically resized to display the entire object.
+  vbOLESizeAutoSize = 2;
+  //Object's image is stretched but is still shown proportionally correct.
+  vbOLESizeZoom = 3;
+  //Object's data is displayed in the OLE container control.
+  vbOLEDisplayContent = 0;
+  //Object's icon is displayed in the OLE container control.
+  vbOLEDisplayIcon = 1;
+  //Object's data has changed.
+  vbOLEChanged = 0;
+  //Object's data has been saved by the application that created the object.
+  vbOLESaved = 1;
+  //Application file containing the linked object's data has been closed.
+  vbOLEClosed = 2;
+  //Application file containing the linked object's data has been renamed.
+  vbOLERenamed = 3;
+  //Default action for the object.
+  vbOLEPrimary = 0;
+  //Activates the object for editing.
+  vbOLEShow = -1;
+  //Opens the object in a separate application window.
+  vbOLEOpen = -2;
+  //For embedded objects, hides the application that created the object.
+  vbOLEHide = -3;
+  //All UI's associated with the object are visible and ready for use.
+  vbOLEUIActivate = -4;
+  //Object is ready for the user to click inside it and start working with it.
+  vbOLEInPlaceActivate = -5;
+  //For discarding all record of changes that the object's application can undo.
+  vbOLEDiscardUndoState = -6;
+  //Grayed menu item.
+  vbOLEFlagGrayed = 1;
+  //Disabled menu item.
+  vbOLEFlagDisabled = 2;
+  //Checked menu item.
+  vbOLEFlagChecked = 8;
+  //Separator bar in menu item list.
+  vbOLEFlagSeparator = 2048;
+  //Causes control to use memory to store the object while it is loaded.
+  vbOLEMiscFlagMemStorage = 1;
+  //Forces OLE container control to activate objects in a separate window.
+  vbOLEMiscFlagDisableInPlace = 2;
+
+//Miscellaneous Menu control constants.
+Enum MenuControlConstants;
+GUID = {AD4EF4E6-FAC9-11CF-8425-00A0C9110056};
+  //Pop-up menu aligned left.
+  vbPopupMenuLeftAlign = 0;
+  //Pop-up menu centered.
+  vbPopupMenuCenterAlign = 4;
+  //Pop-up menu aligned right.
+  vbPopupMenuRightAlign = 8;
+  //Pop-up menu recognizes left mouse button only.
+  vbPopupMenuLeftButton = 0;
+  //Pop-up menu recognizes right and left mouse button.
+  vbPopupMenuRightButton = 2;
+
+//Miscellaneous Printer object constants.
+Enum PrinterObjectConstants;
+GUID = {AD4EF4E7-FAC9-11CF-8425-00A0C9110056};
+  //Monochrome printer output.
+  vbPRCMMonochrome = 1;
+  //Color printer output.
+  vbPRCMColor = 2;
+  //Single-sided printing.
+  vbPRDPSimplex = 1;
+  //Double-sided horizontal printing.
+  vbPRDPHorizontal = 2;
+  //Double-sided vertical printing.
+  vbPRDPVertical = 3;
+  //Documents print with the top at the narrow side of the paper.
+  vbPRORPortrait = 1;
+  //Documents print with the top at the wide side of the paper.
+  vbPRORLandscape = 2;
+  //Draft print quality.
+  vbPRPQDraft = -1;
+  //Low print quality.
+  vbPRPQLow = -2;
+  //Medium print quality.
+  vbPRPQMedium = -3;
+  //High print quality.
+  vbPRPQHigh = -4;
+  //Use paper from the upper bin.
+  vbPRBNUpper = 1;
+  //Use paper from the lower bin.
+  vbPRBNLower = 2;
+  //Use paper from the middle bin.
+  vbPRBNMiddle = 3;
+  //Wait for manual insertion of each sheet of paper.
+  vbPRBNManual = 4;
+  //Use envelopes from the envelope feeder.
+  vbPRBNEnvelope = 5;
+  //Use envelopes from the envelope feeder, but wait for manual insertion.
+  vbPRBNEnvManual = 6;
+  //Use paper from the current default bin (Default).
+  vbPRBNAuto = 7;
+  //Use paper fed from the tractor feeder.
+  vbPRBNTractor = 8;
+  //Use paper from the small paper feeder.
+  vbPRBNSmallFmt = 9;
+  //Use paper from the large paper bin.
+  vbPRBNLargeFmt = 10;
+  //Use paper from the large capacity feeder.
+  vbPRBNLargeCapacity = 11;
+  //Use paper from the attached cassette cartridge.
+  vbPRBNCassette = 14;
+  //Letter, 8 1/2 x 11 in. (PaperSize).
+  vbPRPSLetter = 1;
+  //+A611Letter Small, 8 1/2 x 11 in. (PaperSize).
+  vbPRPSLetterSmall = 2;
+  //Tabloid, 11 x 17 in. (PaperSize).
+  vbPRPSTabloid = 3;
+  //Ledger, 17 x 11 in. (PaperSize).
+  vbPRPSLedger = 4;
+  //Legal, 8 1/2 x 14 in. (PaperSize).
+  vbPRPSLegal = 5;
+  //Statement, 5 1/2 x 8 1/2 in. (PaperSize).
+  vbPRPSStatement = 6;
+  //Executive, 7 1/2 x 10 1/2 in. (PaperSize).
+  vbPRPSExecutive = 7;
+  //A3, 297 x 420 mm (PaperSize).
+  vbPRPSA3 = 8;
+  //A4, 210 x 297 mm (PaperSize).
+  vbPRPSA4 = 9;
+  //A4 Small, 210 x 297 mm (PaperSize).
+  vbPRPSA4Small = 10;
+  //A5, 148 x 210 mm (PaperSize).
+  vbPRPSA5 = 11;
+  //B4, 250 x 354 mm (PaperSize).
+  vbPRPSB4 = 12;
+  //B5, 182 x 257 mm (PaperSize).
+  vbPRPSB5 = 13;
+  //Folio, 8 1/2 x 13 in. (PaperSize).
+  vbPRPSFolio = 14;
+  //Quarto, 215 x 275 mm (PaperSize).
+  vbPRPSQuarto = 15;
+  //10 x 14 in. (PaperSize).
+  vbPRPS10x14 = 16;
+  //11 x 17 in. (PaperSize).
+  vbPRPS11x17 = 17;
+  //Note, 8 1/2 x 11 in. (PaperSize).
+  vbPRPSNote = 18;
+  //Envelope #9, 3 7/8 x 8 7/8 in. (PaperSize).
+  vbPRPSEnv9 = 19;
+  //Envelope #10, 4 1/8 x 9 1/2 in. (PaperSize).
+  vbPRPSEnv10 = 20;
+  //Envelope #11, 4 1/2 x 10 3/8 in. (PaperSize).
+  vbPRPSEnv11 = 21;
+  //Envelope #12, 4 1/2 x 11 in. (PaperSize).
+  vbPRPSEnv12 = 22;
+  //Envelope #14, 5 x 11 1/2 in. (PaperSize).
+  vbPRPSEnv14 = 23;
+  //C size sheet (PaperSize).
+  vbPRPSCSheet = 24;
+  //D size sheet (PaperSize).
+  vbPRPSDSheet = 25;
+  //E size sheet (PaperSize).
+  vbPRPSESheet = 26;
+  //Envelope DL, 110 x 220 mm (PaperSize).
+  vbPRPSEnvDL = 27;
+  //Envelope C3, 324 x 458 mm (PaperSize).
+  vbPRPSEnvC3 = 29;
+  //Envelope C4, 229 x 324 mm (PaperSize).
+  vbPRPSEnvC4 = 30;
+  //Envelope C5, 162 x 229 mm (PaperSize).
+  vbPRPSEnvC5 = 28;
+  //Envelope C6, 114 x 162 mm (PaperSize).
+  vbPRPSEnvC6 = 31;
+  //Envelope C65, 114 x 229 mm (PaperSize).
+  vbPRPSEnvC65 = 32;
+  //Envelope B4, 250 x 353 mm (PaperSize).
+  vbPRPSEnvB4 = 33;
+  //Envelope B5, 176 x 250 mm (PaperSize).
+  vbPRPSEnvB5 = 34;
+  //Envelope B6, 176 x 125 mm (PaperSize).
+  vbPRPSEnvB6 = 35;
+  //Envelope, 110 x 230 mm (PaperSize).
+  vbPRPSEnvItaly = 36;
+  //Envelope Monarch, 3 7/8 x 7 1/2 in. (PaperSize).
+  vbPRPSEnvMonarch = 37;
+  //Envelope, 3 5/8 x 6 1/2 in. (PaperSize).
+  vbPRPSEnvPersonal = 38;
+  //U.S. Standard Fanfold, 14 7/8 x 11 in. (PaperSize).
+  vbPRPSFanfoldUS = 39;
+  //German Standard Fanfold, 8 1/2 x 12 in. (PaperSize).
+  vbPRPSFanfoldStdGerman = 40;
+  //German Legal Fanfold, 8 1/2 x 13 in. (PaperSize).
+  vbPRPSFanfoldLglGerman = 41;
+  //User-defined (PaperSize).
+  vbPRPSUser = 256;
+
+//Opcode constants for the PaintPicture method.
+Enum RasterOpConstants;
+GUID = {AD4EF4E8-FAC9-11CF-8425-00A0C9110056};
+  //Inverts the destination bitmap.
+  vbDstInvert = 5570569;
+  //Combines the pattern and the source bitmap.
+  vbMergeCopy = 12583114;
+  //Combines the inverted source bitmap with the destination bitmap.
+  vbMergePaint = 12255782;
+  //Copies the inverted source bitmap to the destination.
+  vbNotSrcCopy = 3342344;
+  //Inverts the result of combining the destination and source bitmaps.
+  vbNotSrcErase = 1114278;
+  //Combines pixels of the destination and source bitmaps.
+  vbSrcAnd = 8913094;
+  //Copies the source bitmap to the destination bitmap.
+  vbSrcCopy = 13369376;
+  //Inverts the destination bitmap; combines the result with the source bitmap.
+  vbSrcErase = 4457256;
+  //Combines pixels of the destination and source bitmaps.
+  vbSrcInvert = 6684742;
+  //Combines pixels of the destination and source bitmaps.
+  vbSrcPaint = 15597702;
+  //Copies the pattern to the destination bitmap.
+  vbPatCopy = 15728673;
+  //Combines the destination bitmap with the pattern.
+  vbPatPaint = 16452105;
+  //Combines the inverted source bitmap/pattern with a destination bitmap.
+  vbPatInvert = 5898313;
+
+//Checkbox Value property constants.
+Enum CheckBoxConstants;
+GUID = {AD4EF4E9-FAC9-11CF-8425-00A0C9110056};
+  //Unchecked check value.
+  vbUnchecked = 0;
+  //Checked check value.
+  vbChecked = 1;
+  //Grayed check value.
+  vbGrayed = 2;
+
+//Constants for the LoadResData and LoadResPicture methods.
+Enum LoadResConstants;
+GUID = {AD4EF4EA-FAC9-11CF-8425-00A0C9110056};
+  //Bitmap resource.
+  vbResBitmap = 0;
+  //Cursor resource.
+  vbResIcon = 1;
+  //Cursor resource.
+  vbResCursor = 2;
+
+//Button Constants (for CommandButton, CheckBox, and OptionButton).
+Enum ButtonConstants;
+GUID = {AD4EF4EB-FAC9-11CF-8425-00A0C9110056};
+  //Standard Windows appearance.
+  vbButtonStandard = 0;
+  //Graphical appearance (picture, text, and/or non-standard Backcolor).
+  vbButtonGraphical = 1;
+
+//ListBox Constants for the Style property.
+Enum ListBoxConstants;
+GUID = {AD4EF4EC-FAC9-11CF-8425-00A0C9110056};
+  //Standard Windows appearance.
+  vbListBoxStandard = 0;
+  //Entries contain selectable checkboxes.
+  vbListBoxCheckbox = 1;
+
+//Constants for the ParentControlsType property.
+Enum ParentControlsType;
+GUID = {73007F01-3D85-11D0-9469-00A0C91110ED};
+  //The ParentControls collection will return the control itself.
+  vbNoExtender = 0;
+  //The ParentControls collection will return the extender for the control.
+  vbExtender = 1;
+
+//Constants used for LoadPicture Size.
+Enum LoadPictureSizeConstants;
+GUID = {8D2DA731-ED9D-11D0-A1BB-00A0C90F2731};
+  //System small icon
+  vbLPSmall = 0;
+  //System large icon
+  vbLPLarge = 1;
+  //Shell small icon
+  vbLPSmallShell = 2;
+  //Shell large icon
+  vbLPLargeShell = 3;
+  //Custom size
+  vbLPCustom = 4;
+
+//Constants used for LoadPicture ColorDepth.
+Enum LoadPictureColorConstants;
+GUID = {0F2F26F0-ED9E-11D0-A1BB-00A0C90F2731};
+  //System chooses best match
+  vbLPDefault = 0;
+  //2 colors
+  vbLPMonochrome = 1;
+  //16 colors
+  vbLPVGAColor = 2;
+  //256 colors
+  vbLPColor = 3;
+
+//Constants used for HitResult parameter of HitTest event
+Enum HitResultConstants;
+GUID = {7C5FCAA0-549F-11D1-A1E1-00A0C90F2731};
+  //Outside the object.
+  vbHitResultOutside = 0;
+  //Within the bounds of the object, but on a transparent area.
+  vbHitResultTransparent = 1;
+  //Not on the object, but close enough to be considered a hit.
+  vbHitResultClose = 2;
+  //On the visible area of the object.
+  vbHitResultHit = 3;
+
+//Constants for the App object's LogMode property
+Enum LogModeConstants;
+GUID = {FD062850-343A-11D1-84FB-00A0C90DC8A9};
+  //Under Windows 95, messages are logged to the file in the LogPath property. Under Windows NT, messages are logged to the NT Application Event Log (using App.Title as the application source).
+  vbLogAuto = 0;
+  //Turns all logging off.
+  vbLogOff = 1;
+  //Forces logging to the file specified by the LogPath property.
+  vbLogToFile = 2;
+  //Forces logging to the NT event log if running on Windows NT, otherwise logging is ignored.
+  vbLogToNT = 3;
+  //Indicates that the logfile should be recreated each time the application starts. This value can be combined with other mode options using the OR operator.
+  vbLogOverwrite = 16;
+  //Indicates that the current thread ID be prepended to the message. This value can be combined with other mode options using the OR operator.
+  vbLogThreadID = 32;
+
+//VB5 version of PropertyBag interface.  Use this interface to maintain binary compatibility with VB5 projects that use this interface.
+Dispatch PropertyBag_VB5;
+GUID = {45046D60-08CA-11CF-A90F-00AA0062BB4C};
+  function QueryInterface(riid: ^GUID; out ppvObj: ^^VOID); stdcall;
+  function AddRef: UI4; stdcall;
+  function Release: UI4; stdcall;
+  function GetTypeInfoCount(out pctinfo: ^UINT); stdcall;
+  function GetTypeInfo(itinfo: UINT; lcid: UI4; out pptinfo: ^^VOID); stdcall;
+  function GetIDsOfNames(riid: ^GUID; rgszNames: ^^I1; cNames: UINT; lcid: UI4; out rgdispid: ^I4); stdcall;
+  function Invoke(dispidMember: I4; riid: ^GUID; lcid: UI4; wFlags: UI2; pdispparams: ^DISPPARAMS; out pvarResult: ^Variant; out pexcepinfo: ^EXCEPINFO; out puArgErr: ^UINT); stdcall;
+  //Returns a persisted value from a PropertyBag class object.
+  function ReadProperty(Name: BSTR; out DefaultValue: Variant): Variant; stdcall;
+  //Writes a value to be persisted to a PropertyBag class object.
+  function WriteProperty(Name: BSTR; Value: Variant; out DefaultValue: Variant); stdcall;
+
+//A PropertyBag object holds information that is to be persisted across invocations of a control.
+Dispatch _PropertyBag;
+GUID = {4495AD01-C993-11D1-A3E4-00A0C90AEA82};
+  function QueryInterface(riid: ^GUID; out ppvObj: ^^VOID); stdcall;
+  function AddRef: UI4; stdcall;
+  function Release: UI4; stdcall;
+  function GetTypeInfoCount(out pctinfo: ^UINT); stdcall;
+  function GetTypeInfo(itinfo: UINT; lcid: UI4; out pptinfo: ^^VOID); stdcall;
+  function GetIDsOfNames(riid: ^GUID; rgszNames: ^^I1; cNames: UINT; lcid: UI4; out rgdispid: ^I4); stdcall;
+  function Invoke(dispidMember: I4; riid: ^GUID; lcid: UI4; wFlags: UI2; pdispparams: ^DISPPARAMS; out pvarResult: ^Variant; out pexcepinfo: ^EXCEPINFO; out puArgErr: ^UINT); stdcall;
+  //Returns a persisted value from a PropertyBag class object.
+  function ReadProperty(Name: BSTR; out DefaultValue: Variant): Variant; stdcall;
+  //Writes a value to be persisted to a PropertyBag class object.
+  function WriteProperty(Name: BSTR; Value: Variant; out DefaultValue: Variant); stdcall;
+  //A byte array representing the contents of the PropertyBag
+  property-get Contents: Variant; stdcall;
+  //A byte array representing the contents of the PropertyBag
+  property-put Contents(: Variant); stdcall;
+
+//A PropertyBag object holds information that is to be persisted across invocations of a control.
+CoClass PropertyBag;
+GUID = {D5DE8D20-5BB8-11D1-A1E3-00A0C90F2731};
+
+//The DataObjectFiles object is a collection of filenames used by the DataObject object (vbCFFiles format only).
+Dispatch DataObjectFiles;
+GUID = {41A7D761-6018-11CF-9016-00AA0068841E};
+  function QueryInterface(riid: ^GUID; out ppvObj: ^^VOID); stdcall;
+  function AddRef: UI4; stdcall;
+  function Release: UI4; stdcall;
+  function GetTypeInfoCount(out pctinfo: ^UINT); stdcall;
+  function GetTypeInfo(itinfo: UINT; lcid: UI4; out pptinfo: ^^VOID); stdcall;
+  function GetIDsOfNames(riid: ^GUID; rgszNames: ^^I1; cNames: UINT; lcid: UI4; out rgdispid: ^I4); stdcall;
+  function Invoke(dispidMember: I4; riid: ^GUID; lcid: UI4; wFlags: UI2; pdispparams: ^DISPPARAMS; out pvarResult: ^Variant; out pexcepinfo: ^EXCEPINFO; out puArgErr: ^UINT); stdcall;
+  //Returns a specific filename by index from the Files collection of a DataObject object (vbCFFiles format only).
+  property-get Item(index: I4): BSTR; stdcall;
+  //Returns the number of filenames in the Files collection of a DataObject object (vbCFFiles format only)
+  property-get Count: I4; stdcall;
+  //Adds a filename to the Files collection of a DataObject object (vbCFFiles format only).
+  function Add(Filename: BSTR; out index: Variant); stdcall;
+  //Clears all filenames stored in the Files collection of a DataObject object (vbCFFiles format only).
+  function Clear; stdcall;
+  //Removes a filename from the Files collection of a DataObject object (vbCFFiles format only).
+  function Remove(index: Variant); stdcall;
+  function _NewEnum: IUnknown; stdcall;
+
+//The DataObject object is used for specifying formats and data that will be supported for OLE drag and drop operations.
+Dispatch DataObject;
+GUID = {41A7D760-6018-11CF-9016-00AA0068841E};
+  function QueryInterface(riid: ^GUID; out ppvObj: ^^VOID); stdcall;
+  function AddRef: UI4; stdcall;
+  function Release: UI4; stdcall;
+  function GetTypeInfoCount(out pctinfo: ^UINT); stdcall;
+  function GetTypeInfo(itinfo: UINT; lcid: UI4; out pptinfo: ^^VOID); stdcall;
+  function GetIDsOfNames(riid: ^GUID; rgszNames: ^^I1; cNames: UINT; lcid: UI4; out rgdispid: ^I4); stdcall;
+  function Invoke(dispidMember: I4; riid: ^GUID; lcid: UI4; wFlags: UI2; pdispparams: ^DISPPARAMS; out pvarResult: ^Variant; out pexcepinfo: ^EXCEPINFO; out puArgErr: ^UINT); stdcall;
+  //Clears all data and formats in a DataObject object.
+  function Clear; stdcall;
+  //Adds a supported format and possibly its data to a DataObject object.
+  function SetData(out Value: Variant; out Format: Variant); stdcall;
+  //Retrieves data of a specified format from a DataObject object.
+  function GetData(Format: I2): Variant; stdcall;
+  //Determines if a specified clipboard format is supported by the DataObject object.
+  function GetFormat(Format: I2): Bool; stdcall;
+  //A collection of filenames used by the vbCFFiles format.
+  property-get Files: ^DataObjectFiles; stdcall;
+
+//The AmbientProperties object allows access to the ambient properties of the container.
+Dispatch AmbientProperties;
+GUID = {B28FA150-0FF0-11CF-A911-00AA0062BB4C};
+  function QueryInterface(riid: ^GUID; out ppvObj: ^^VOID); stdcall;
+  function AddRef: UI4; stdcall;
+  function Release: UI4; stdcall;
+  function GetTypeInfoCount(out pctinfo: ^UINT); stdcall;
+  function GetTypeInfo(itinfo: UINT; lcid: UI4; out pptinfo: ^^VOID); stdcall;
+  function GetIDsOfNames(riid: ^GUID; rgszNames: ^^I1; cNames: UINT; lcid: UI4; out rgdispid: ^I4); stdcall;
+  function Invoke(dispidMember: I4; riid: ^GUID; lcid: UI4; wFlags: UI2; pdispparams: ^DISPPARAMS; out pvarResult: ^Variant; out pexcepinfo: ^EXCEPINFO; out puArgErr: ^UINT); stdcall;
+  //A color that contains the suggested interior color of the contained control.
+  property-get BackColor: OLE_COLOR; stdcall;
+  //A string containing the name that the control should display for itself.
+  property-get DisplayName: BSTR; stdcall;
+  //Returns a Font object.
+  property-get Font: ^IFontDisp; stdcall;
+  //A color that contains the suggested foreground color of the contained control.
+  property-get ForeColor: OLE_COLOR; stdcall;
+  //Returns a long value that contains the Locale identification (language and country) of the user.
+  property-get LocaleID: I4; stdcall;
+  //Returns a boolean value stating whether the control container handles message reflection automatically.
+  property-get MessageReflect: Bool; stdcall;
+  //Returns a string value that is the name of the coordinate units being used by the container.
+  property-get ScaleUnits: BSTR; stdcall;
+  //Returns an enumerated value of type TextAlignChoices stating what kind of text alignment the container would like the control to do.
+  property-get TextAlign: I2; stdcall;
+  //Returns a boolean value indicating whether the control is being used by a form designer or a form user.
+  property-get UserMode: Bool; stdcall;
+  //Returns a boolean value indicating whether the control should be responsive to the user or not.
+  property-get UIDead: Bool; stdcall;
+  //Returns a boolean value stating whether the control should show grab handles.
+  property-get ShowGrabHandles: Bool; stdcall;
+  //Returns a boolean value stating whether the control should show hatching around the control.
+  property-get ShowHatching: Bool; stdcall;
+  //Returns a boolean value to determine if the control is the default button for the container, and therefore should display itself as the default control.
+  property-get DisplayAsDefault: Bool; stdcall;
+  //Returns a boolean value stating whether the control’s container handles access keys for the control.
+  property-get SupportsMnemonics: Bool; stdcall;
+  //Returns/sets an image that contains the palette to use for the control.
+  property-get Palette: ^IPictureDisp; stdcall;
+  //Returns a boolean value indicating text display direction and control visual appearance on a bidirectional system.
+  property-get RightToLeft: Bool; stdcall;
+
+//A collection object that can contain all the currently selected controls on an object.
+Dispatch SelectedControls;
+GUID = {2CE46480-1A08-11CF-AD63-00AA00614F3E};
+  function QueryInterface(riid: ^GUID; out ppvObj: ^^VOID); stdcall;
+  function AddRef: UI4; stdcall;
+  function Release: UI4; stdcall;
+  function GetTypeInfoCount(out pctinfo: ^UINT); stdcall;
+  function GetTypeInfo(itinfo: UINT; lcid: UI4; out pptinfo: ^^VOID); stdcall;
+  function GetIDsOfNames(riid: ^GUID; rgszNames: ^^I1; cNames: UINT; lcid: UI4; out rgdispid: ^I4); stdcall;
+  function Invoke(dispidMember: I4; riid: ^GUID; lcid: UI4; wFlags: UI2; pdispparams: ^DISPPARAMS; out pvarResult: ^Variant; out pexcepinfo: ^EXCEPINFO; out puArgErr: ^UINT); stdcall;
+  //Returns the number of members in a collection.
+  property-get Count: I4; stdcall;
+  //Returns a specific member of a Collection object.
+  property-get Item(index: I4): IDispatch; stdcall;
+  function _NewEnum: IUnknown; stdcall;
+
+//A collection that allows access to the other controls in the control's container.
+Dispatch ParentControls;
+GUID = {BE8F9800-2AAA-11CF-AD67-00AA00614F3E};
+  function QueryInterface(riid: ^GUID; out ppvObj: ^^VOID); stdcall;
+  function AddRef: UI4; stdcall;
+  function Release: UI4; stdcall;
+  function GetTypeInfoCount(out pctinfo: ^UINT); stdcall;
+  function GetTypeInfo(itinfo: UINT; lcid: UI4; out pptinfo: ^^VOID); stdcall;
+  function GetIDsOfNames(riid: ^GUID; rgszNames: ^^I1; cNames: UINT; lcid: UI4; out rgdispid: ^I4); stdcall;
+  function Invoke(dispidMember: I4; riid: ^GUID; lcid: UI4; wFlags: UI2; pdispparams: ^DISPPARAMS; out pvarResult: ^Variant; out pexcepinfo: ^EXCEPINFO; out puArgErr: ^UINT); stdcall;
+  //Returns the number of members in a collection.
+  property-get Count: I4; stdcall;
+  //Returns a specific member of a collection.
+  property-get Item(index: I4): IDispatch; stdcall;
+  function _NewEnum: IUnknown; stdcall;
+  //Returns/sets whether the ParentControls collection returns the extender or the control itself.
+  property-get ParentControlsType: ParentControlsType; stdcall;
+  //Returns/sets whether the ParentControls collection returns the extender or the control itself.
+  property-put ParentControlsType(: ParentControlsType); stdcall;
+
+//A collection that allows access to the controls contained within the control that were added to the control by the developer who uses the control.
+Dispatch ContainedControls;
+GUID = {C0324960-2AAA-11CF-AD67-00AA00614F3E};
+  function QueryInterface(riid: ^GUID; out ppvObj: ^^VOID); stdcall;
+  function AddRef: UI4; stdcall;
+  function Release: UI4; stdcall;
+  function GetTypeInfoCount(out pctinfo: ^UINT); stdcall;
+  function GetTypeInfo(itinfo: UINT; lcid: UI4; out pptinfo: ^^VOID); stdcall;
+  function GetIDsOfNames(riid: ^GUID; rgszNames: ^^I1; cNames: UINT; lcid: UI4; out rgdispid: ^I4); stdcall;
+  function Invoke(dispidMember: I4; riid: ^GUID; lcid: UI4; wFlags: UI2; pdispparams: ^DISPPARAMS; out pvarResult: ^Variant; out pexcepinfo: ^EXCEPINFO; out puArgErr: ^UINT); stdcall;
+  //Returns the number of members in a collection.
+  property-get Count: I4; stdcall;
+  //Returns a specific member of a collection.
+  property-get Item(index: I4): IDispatch; stdcall;
+  function _NewEnum: IUnknown; stdcall;
+
+//DataBindings is a collection of DataBinding objects.
+Dispatch DataBindings;
+GUID = {D4E0F020-720A-11CF-8136-00AA00C14959};
+  function QueryInterface(riid: ^GUID; out ppvObj: ^^VOID); stdcall;
+  function AddRef: UI4; stdcall;
+  function Release: UI4; stdcall;
+  function GetTypeInfoCount(out pctinfo: ^UINT); stdcall;
+  function GetTypeInfo(itinfo: UINT; lcid: UI4; out pptinfo: ^^VOID); stdcall;
+  function GetIDsOfNames(riid: ^GUID; rgszNames: ^^I1; cNames: UINT; lcid: UI4; out rgdispid: ^I4); stdcall;
+  function Invoke(dispidMember: I4; riid: ^GUID; lcid: UI4; wFlags: UI2; pdispparams: ^DISPPARAMS; out pvarResult: ^Variant; out pexcepinfo: ^EXCEPINFO; out puArgErr: ^UINT); stdcall;
+  //Returns the number of DataBinding objects in this collection.
+  property-get Count: I4; stdcall;
+  //Returns a specific DataBinding object by index or PropertyName from this collection.
+  property-get Item(_Index: Variant): IDispatch; stdcall;
+  function _NewEnum: IUnknown; stdcall;
+
+//An object describing the attributes of the property a control is bound to.
+Dispatch DataBinding;
+GUID = {7500A6BA-EB65-11D1-938D-0000F87557C9};
+  function QueryInterface(riid: ^GUID; out ppvObj: ^^VOID); stdcall;
+  function AddRef: UI4; stdcall;
+  function Release: UI4; stdcall;
+  function GetTypeInfoCount(out pctinfo: ^UINT); stdcall;
+  function GetTypeInfo(itinfo: UINT; lcid: UI4; out pptinfo: ^^VOID); stdcall;
+  function GetIDsOfNames(riid: ^GUID; rgszNames: ^^I1; cNames: UINT; lcid: UI4; out rgdispid: ^I4); stdcall;
+  function Invoke(dispidMember: I4; riid: ^GUID; lcid: UI4; wFlags: UI2; pdispparams: ^DISPPARAMS; out pvarResult: ^Variant; out pexcepinfo: ^EXCEPINFO; out puArgErr: ^UINT); stdcall;
+  //Returns the name of the property this object refers to.
+  property-get PropertyName: BSTR; stdcall;
+  //Returns/sets the column name used in binding this property to a recordsource.
+  property-get DataField: BSTR; stdcall;
+  //Returns/sets the column name used in binding this property to a recordsource.
+  property-put DataField(: BSTR); stdcall;
+  //Returns/sets a value indicating that data in this property has changed by some process other than by retrieving data from the current record.
+  property-get DataChanged: Bool; stdcall;
+  //Returns/sets a value indicating that data in this property has changed by some process other than by retrieving data from the current record.
+  property-put DataChanged(: Bool); stdcall;
+  //Returns the name of the data source control this property is bound to.
+  property-get DataSourceName: BSTR; stdcall;
+  //Returns the name of the data source control this property is bound to.
+  property-put DataSourceName(: BSTR); stdcall;
+  //Returns a Boolean to indicate whether the property  is a data source
+  property-get IsDataSource: Bool; stdcall;
+  //Returns a Boolean to indicate if the property is bindable
+  property-get IsBindable: Bool; stdcall;
+  //Returns/sets the name of the DataMember of the DataSource this property is bound to
+  property-get DataMember: DataMember; stdcall;
+  //Returns/sets the name of the DataMember of the DataSource this property is bound to
+  property-put DataMember(: DataMember); stdcall;
+  //Returns/sets the DataFormat object for this property
+  property-get DataFormat: ^DataFormat; stdcall;
+  //Returns/sets the DataFormat object for this property
+  property-putref DataFormat(: ^DataFormat); stdcall;
+  //Returns/sets the DataSource object for this property
+  property-get DataSource: ^DataSource; stdcall;
+  //Returns/sets the DataSource object for this property
+  property-putref DataSource(: ^DataSource); stdcall;
+
+//An object describing a single parameter of an event
+Dispatch EventParameter;
+GUID = {C4D651F0-7697-11D1-A1E9-00A0C90F2731};
+  function QueryInterface(riid: ^GUID; out ppvObj: ^^VOID); stdcall;
+  function AddRef: UI4; stdcall;
+  function Release: UI4; stdcall;
+  function GetTypeInfoCount(out pctinfo: ^UINT); stdcall;
+  function GetTypeInfo(itinfo: UINT; lcid: UI4; out pptinfo: ^^VOID); stdcall;
+  function GetIDsOfNames(riid: ^GUID; rgszNames: ^^I1; cNames: UINT; lcid: UI4; out rgdispid: ^I4); stdcall;
+  function Invoke(dispidMember: I4; riid: ^GUID; lcid: UI4; wFlags: UI2; pdispparams: ^DISPPARAMS; out pvarResult: ^Variant; out pexcepinfo: ^EXCEPINFO; out puArgErr: ^UINT); stdcall;
+  //The value of the event parameter
+  property-get Value: Variant; stdcall;
+  //The value of the event parameter
+  property-put Value(: Variant); stdcall;
+  //The name of the event parameter
+  property-get Name: BSTR; stdcall;
+
+//A collection of EventParameter objects
+Dispatch EventParameters;
+GUID = {C4D651F1-7697-11D1-A1E9-00A0C90F2731};
+  function QueryInterface(riid: ^GUID; out ppvObj: ^^VOID); stdcall;
+  function AddRef: UI4; stdcall;
+  function Release: UI4; stdcall;
+  function GetTypeInfoCount(out pctinfo: ^UINT); stdcall;
+  function GetTypeInfo(itinfo: UINT; lcid: UI4; out pptinfo: ^^VOID); stdcall;
+  function GetIDsOfNames(riid: ^GUID; rgszNames: ^^I1; cNames: UINT; lcid: UI4; out rgdispid: ^I4); stdcall;
+  function Invoke(dispidMember: I4; riid: ^GUID; lcid: UI4; wFlags: UI2; pdispparams: ^DISPPARAMS; out pvarResult: ^Variant; out pexcepinfo: ^EXCEPINFO; out puArgErr: ^UINT); stdcall;
+  //Returns a specific EventParameter by index or by name
+  property-get Item(index: Variant): ^EventParameter; stdcall;
+  //The number of EventParameters in the collection
+  property-get Count: I4; stdcall;
+  function _NewEnum: IUnknown; stdcall;
+
+//An object describing an event
+Dispatch EventInfo;
+GUID = {C4D651F2-7697-11D1-A1E9-00A0C90F2731};
+  function QueryInterface(riid: ^GUID; out ppvObj: ^^VOID); stdcall;
+  function AddRef: UI4; stdcall;
+  function Release: UI4; stdcall;
+  function GetTypeInfoCount(out pctinfo: ^UINT); stdcall;
+  function GetTypeInfo(itinfo: UINT; lcid: UI4; out pptinfo: ^^VOID); stdcall;
+  function GetIDsOfNames(riid: ^GUID; rgszNames: ^^I1; cNames: UINT; lcid: UI4; out rgdispid: ^I4); stdcall;
+  function Invoke(dispidMember: I4; riid: ^GUID; lcid: UI4; wFlags: UI2; pdispparams: ^DISPPARAMS; out pvarResult: ^Variant; out pexcepinfo: ^EXCEPINFO; out puArgErr: ^UINT); stdcall;
+  //The name of the event
+  property-get Name: BSTR; stdcall;
+  //The collection of parameters to the event
+  property-get EventParameters: ^EventParameters; stdcall;
+
+//The Hyperlink object allows browser navigation in a suitable host
+Dispatch Hyperlink;
+GUID = {888A5A60-B283-11CF-8AD5-00A0C90AEA82};
+  function QueryInterface(riid: ^GUID; out ppvObj: ^^VOID); stdcall;
+  function AddRef: UI4; stdcall;
+  function Release: UI4; stdcall;
+  function GetTypeInfoCount(out pctinfo: ^UINT); stdcall;
+  function GetTypeInfo(itinfo: UINT; lcid: UI4; out pptinfo: ^^VOID); stdcall;
+  function GetIDsOfNames(riid: ^GUID; rgszNames: ^^I1; cNames: UINT; lcid: UI4; out rgdispid: ^I4); stdcall;
+  function Invoke(dispidMember: I4; riid: ^GUID; lcid: UI4; wFlags: UI2; pdispparams: ^DISPPARAMS; out pvarResult: ^Variant; out pexcepinfo: ^EXCEPINFO; out puArgErr: ^UINT); stdcall;
+  //Execute a hyperlink jump forward in the history list.
+  function GoForward; stdcall;
+  //Execute a hyperlink jump back in the history list.
+  function GoBack; stdcall;
+  //Execute a hyperlink jump to the specified target.
+  function NavigateTo(Target: BSTR; out Location: BSTR; out FrameName: BSTR); stdcall;
+
+//VB5 version of the AsyncProperty interface.  Use this interface to maintain binary compatibility with VB5 projects that use this interface.
+Dispatch AsyncProperty_VB5;
+GUID = {14E469E0-BF61-11CF-8385-8F69D8F1350B};
+  function QueryInterface(riid: ^GUID; out ppvObj: ^^VOID); stdcall;
+  function AddRef: UI4; stdcall;
+  function Release: UI4; stdcall;
+  function GetTypeInfoCount(out pctinfo: ^UINT); stdcall;
+  function GetTypeInfo(itinfo: UINT; lcid: UI4; out pptinfo: ^^VOID); stdcall;
+  function GetIDsOfNames(riid: ^GUID; rgszNames: ^^I1; cNames: UINT; lcid: UI4; out rgdispid: ^I4); stdcall;
+  function Invoke(dispidMember: I4; riid: ^GUID; lcid: UI4; wFlags: UI2; pdispparams: ^DISPPARAMS; out pvarResult: ^Variant; out pexcepinfo: ^EXCEPINFO; out puArgErr: ^UINT); stdcall;
+  //A Variant containing the results of the asychronous read.  This is the default property of the AsyncProperty object.
+  property-get Value: Variant; stdcall;
+  //An enumeration specifying the type of the data in the Value property.
+  property-get AsyncType: AsyncTypeConstants; stdcall;
+  //A string containing the property name that was passed in the AsyncRead method.
+  property-get PropertyName: BSTR; stdcall;
+
+//The AsyncProperty object is passed in to the AsyncReadComplete and AsyncReadProgress events, and contains the results of the asynchronous read.
+Dispatch AsyncProperty;
+GUID = {CBB76011-C508-11D1-A3E3-00A0C90AEA82};
+  function QueryInterface(riid: ^GUID; out ppvObj: ^^VOID); stdcall;
+  function AddRef: UI4; stdcall;
+  function Release: UI4; stdcall;
+  function GetTypeInfoCount(out pctinfo: ^UINT); stdcall;
+  function GetTypeInfo(itinfo: UINT; lcid: UI4; out pptinfo: ^^VOID); stdcall;
+  function GetIDsOfNames(riid: ^GUID; rgszNames: ^^I1; cNames: UINT; lcid: UI4; out rgdispid: ^I4); stdcall;
+  function Invoke(dispidMember: I4; riid: ^GUID; lcid: UI4; wFlags: UI2; pdispparams: ^DISPPARAMS; out pvarResult: ^Variant; out pexcepinfo: ^EXCEPINFO; out puArgErr: ^UINT); stdcall;
+  //A Variant containing the results of the asychronous read.  This is the default property of the AsyncProperty object.
+  property-get Value: Variant; stdcall;
+  //An enumeration specifying the type of the data in the Value property.
+  property-get AsyncType: AsyncTypeConstants; stdcall;
+  //A string containing the property name that was passed in the AsyncRead method.
+  property-get PropertyName: BSTR; stdcall;
+  //The Target parameter that was passed to AsyncRead.
+  property-get Target: BSTR; stdcall;
+  //The total number of bytes that have been read.
+  property-get BytesRead: I4; stdcall;
+  //The estimated maximum number of bytes to be read.
+  property-get BytesMax: I4; stdcall;
+  //Protocol specific status information about the AsyncRead.
+  property-get Status: BSTR; stdcall;
+  //An enumeration specifying the current status of the AsyncRead.
+  property-get StatusCode: AsyncStatusCodeConstants; stdcall;
+
+//A collection of data members to show at design time for this data source.
+Dispatch DataMembers;
+GUID = {83C49FF0-B294-11D0-9488-00A0C91110ED};
+  function QueryInterface(riid: ^GUID; out ppvObj: ^^VOID); stdcall;
+  function AddRef: UI4; stdcall;
+  function Release: UI4; stdcall;
+  function GetTypeInfoCount(out pctinfo: ^UINT); stdcall;
+  function GetTypeInfo(itinfo: UINT; lcid: UI4; out pptinfo: ^^VOID); stdcall;
+  function GetIDsOfNames(riid: ^GUID; rgszNames: ^^I1; cNames: UINT; lcid: UI4; out rgdispid: ^I4); stdcall;
+  function Invoke(dispidMember: I4; riid: ^GUID; lcid: UI4; wFlags: UI2; pdispparams: ^DISPPARAMS; out pvarResult: ^Variant; out pexcepinfo: ^EXCEPINFO; out puArgErr: ^UINT); stdcall;
+  //Returns a specific data member by index from the DataMembers collection.
+  property-get Item(index: I4): DataMember; stdcall;
+  //Returns the number of data members in the DataMembers collection.
+  property-get Count: I4; stdcall;
+  //Adds a data member string to the DataMembers collection.
+  function Add(DataMember: DataMember); stdcall;
+  //Removes all data member strings from the DataMembers collection.
+  function Clear; stdcall;
+  //Removes a data member string from the DataMembers collection.
+  function Remove(index: Variant); stdcall;
+  function _NewEnum: IUnknown; stdcall;
+
+Interface IClassModuleEvt;
+GUID = {FCFB3D21-A0FA-1068-A738-08002B3371B5};
+  //Occurs when an application creates an instance of a Class.
+  function Initialize: HResult; stdcall;
+  //Occurs when an instance of a Class is removed from memory by setting all the variables that refer to the object to Nothing or when the last reference to the object falls out of scope.
+  function Terminate: HResult; stdcall;
+
+Interface IDataSourceClassEvt;
+GUID = {6B121A01-45DF-11D1-8907-00A0C9110049};
+  //Occurs when an application creates an instance of a Class.
+  function Initialize: HResult; stdcall;
+  //Occurs when an instance of a Class is removed from memory by setting all the variables that refer to the object to Nothing or when the last reference to the object falls out of scope.
+  function Terminate: HResult; stdcall;
+  //Occurs when a data consumer requests a data member from the Class.
+  function GetDataMember(out DataMember: ^BSTR; out Data: ^IDispatch): HResult; stdcall;
+
+Interface IPersistableClassEvt;
+GUID = {6B121A02-45DF-11D1-8907-00A0C9110049};
+  //Occurs when an application creates an instance of a Class.
+  function Initialize: HResult; stdcall;
+  //Occurs when an instance of a Class is removed from memory by setting all the variables that refer to the object to Nothing or when the last reference to the object falls out of scope.
+  function Terminate: HResult; stdcall;
+  function InitProperties: HResult; stdcall;
+  function ReadProperties(out PropBag: ^^_PropertyBag): HResult; stdcall;
+  function WriteProperties(out PropBag: ^^_PropertyBag): HResult; stdcall;
+
+Interface IPersistableDataSourceClassEvt;
+GUID = {6B121A03-45DF-11D1-8907-00A0C9110049};
+  //Occurs when an application creates an instance of a Class.
+  function Initialize: HResult; stdcall;
+  //Occurs when an instance of a Class is removed from memory by setting all the variables that refer to the object to Nothing or when the last reference to the object falls out of scope.
+  function Terminate: HResult; stdcall;
+  //Occurs when a data consumer requests a data member from the Class.
+  function GetDataMember(out DataMember: ^BSTR; out Data: ^IDispatch): HResult; stdcall;
+  function InitProperties: HResult; stdcall;
+  function ReadProperties(out PropBag: ^^_PropertyBag): HResult; stdcall;
+  function WriteProperties(out PropBag: ^^_PropertyBag): HResult; stdcall;
+
+Interface IDataProviderClassEvt;
+GUID = {6B121A04-45DF-11D1-8907-00A0C9110049};
+  //Occurs when an application creates an instance of a Class.
+  function Initialize: HResult; stdcall;
+  //Occurs when an instance of a Class is removed from memory by setting all the variables that refer to the object to Nothing or when the last reference to the object falls out of scope.
+  function Terminate: HResult; stdcall;
+  //Occurs when a data consumer requests a data member from the Class.
+  function GetDataMember(out DataMember: ^BSTR; out Data: ^IDispatch): HResult; stdcall;
+  //Occurs when a data consumer requests a data member from the Class.
+  function DataConnection(ConnectionString: ^BSTR): HResult; stdcall;
+
+Interface IPersistableDataProviderClassEvt;
+GUID = {6B121A05-45DF-11D1-8907-00A0C9110049};
+  //Occurs when an application creates an instance of a Class.
+  function Initialize: HResult; stdcall;
+  //Occurs when an instance of a Class is removed from memory by setting all the variables that refer to the object to Nothing or when the last reference to the object falls out of scope.
+  function Terminate: HResult; stdcall;
+  //Occurs when a data consumer requests a data member from the Class.
+  function GetDataMember(out DataMember: ^BSTR; out Data: ^IDispatch): HResult; stdcall;
+  //Occurs when a data consumer requests a data member from the Class.
+  function DataConnection(ConnectionString: BSTR): HResult; stdcall;
+  function InitProperties: HResult; stdcall;
+  function ReadProperties(out PropBag: ^^_PropertyBag): HResult; stdcall;
+  function WriteProperties(out PropBag: ^^_PropertyBag): HResult; stdcall;
+
+Dispatch _DClass;
+GUID = {FCFB3D2B-A0FA-1068-A738-08002B3371B5};
+
+Dispatch _DDataBoundClass;
+GUID = {EB41E8C1-4442-11D1-8906-00A0C9110049};
+  //Notifies data binding agents that a property on a Class has been changed.
+  function PropertyChanged(out PropertyName: BSTR); stdcall;
+  //Asks data binding agents if a property bound to a data source can be changed.
+  function CanPropertyChange(out PropertyName: BSTR): Bool; stdcall;
+
+Dispatch _DDataSourceClass;
+GUID = {EB41E8C2-4442-11D1-8906-00A0C9110049};
+  //Notifies data consumers that a data member of the Class has changed.
+  function DataMemberChanged(out DataMember: DataMember); stdcall;
+  //Returns a collection of data members to show at design time for this data source.
+  property-get DataMembers: ^DataMembers; stdcall;
+
+Dispatch _DDataBoundAndDataSourceClass;
+GUID = {EB41E8C3-4442-11D1-8906-00A0C9110049};
+  //Notifies data binding agents that a property on a Class has been changed.
+  function PropertyChanged(out PropertyName: BSTR); stdcall;
+  //Asks data binding agents if a property bound to a data source can be changed.
+  function CanPropertyChange(out PropertyName: BSTR): Bool; stdcall;
+  //Notifies data consumers that a data member of the Class has changed.
+  function DataMemberChanged(out DataMember: DataMember); stdcall;
+  //Returns a collection of data members to show at design time for this data source.
+  property-get DataMembers: ^DataMembers; stdcall;
+
+Dispatch _DPersistableClass;
+GUID = {EB41E8C4-4442-11D1-8906-00A0C9110049};
+  //Notifies data binding agents that a property on a Class has been changed.
+  function PropertyChanged(out PropertyName: BSTR); stdcall;
+
+Dispatch _DPersistableDataSourceClass;
+GUID = {EB41E8C5-4442-11D1-8906-00A0C9110049};
+  //Notifies data binding agents that a property on a Class has been changed.
+  function PropertyChanged(out PropertyName: BSTR); stdcall;
+  //Notifies data consumers that a data member of the Class has changed.
+  function DataMemberChanged(out DataMember: DataMember); stdcall;
+  //Returns a collection of data members to show at design time for this data source.
+  property-get DataMembers: ^DataMembers; stdcall;
+
+//An object returned by the Licenses collection that contains license information for a control.
+Dispatch LicenseInfo;
+GUID = {8284B8A2-A8A8-11D1-A3D2-00A0C90AEA82};
+  function QueryInterface(riid: ^GUID; out ppvObj: ^^VOID); stdcall;
+  function AddRef: UI4; stdcall;
+  function Release: UI4; stdcall;
+  function GetTypeInfoCount(out pctinfo: ^UINT); stdcall;
+  function GetTypeInfo(itinfo: UINT; lcid: UI4; out pptinfo: ^^VOID); stdcall;
+  function GetIDsOfNames(riid: ^GUID; rgszNames: ^^I1; cNames: UINT; lcid: UI4; out rgdispid: ^I4); stdcall;
+  function Invoke(dispidMember: I4; riid: ^GUID; lcid: UI4; wFlags: UI2; pdispparams: ^DISPPARAMS; out pvarResult: ^Variant; out pexcepinfo: ^EXCEPINFO; out puArgErr: ^UINT); stdcall;
+  //The ProgId for the control.
+  property-get ProgId: BSTR; stdcall;
+  //The license key for the control specified by the ProgId property of this object.
+  property-get LicenseKey: BSTR; stdcall;
+
+//A collection of LicenseInfo objects for use with Controls.Add.
+Dispatch Licenses;
+GUID = {737361EC-467F-11D1-810F-0000F87557AA};
+  function QueryInterface(riid: ^GUID; out ppvObj: ^^VOID); stdcall;
+  function AddRef: UI4; stdcall;
+  function Release: UI4; stdcall;
+  function GetTypeInfoCount(out pctinfo: ^UINT); stdcall;
+  function GetTypeInfo(itinfo: UINT; lcid: UI4; out pptinfo: ^^VOID); stdcall;
+  function GetIDsOfNames(riid: ^GUID; rgszNames: ^^I1; cNames: UINT; lcid: UI4; out rgdispid: ^I4); stdcall;
+  function Invoke(dispidMember: I4; riid: ^GUID; lcid: UI4; wFlags: UI2; pdispparams: ^DISPPARAMS; out pvarResult: ^Variant; out pexcepinfo: ^EXCEPINFO; out puArgErr: ^UINT); stdcall;
+  //Returns a specific LicenseInfo object by index from the Licenses collection.
+  property-get Item(index: Variant): ^LicenseInfo; stdcall;
+  //Returns the number of LicenseInfo objects in the Licenses collection.
+  property-get Count: I4; stdcall;
+  //Creates a LicenseInfo object and adds it to the Licenses collection.
+  function Add(ProgId: BSTR; out LicenseKey: BSTR): BSTR; stdcall;
+  //Removes all LicenseInfo objects from the Licenses collection.
+  function Clear; stdcall;
+  //Removes a LicenseInfo object from the Licenses collection.
+  function Remove(index: Variant); stdcall;
+  function _NewEnum: IUnknown; stdcall;
+
+Interface IProjectControl;
+GUID = {27F56410-6161-11D1-946E-00A0C90F26F1};
+  //Retain the project data structures on the threads.
+  function RetainProject: HResult; stdcall;
+  //Allow the project data structures to be unloaded from threads.
+  function UnloadProject: HResult; stdcall;
+  //Run time project retention is active
+  function IsRetained(out Return: ^Bool): HResult; stdcall;
+  //Design time project retention is active
+  function IsPermanent(out Return: ^Bool): HResult; stdcall;
+
+Interface IVbeRuntimeHost;
+GUID = {E43FD401-8715-11D1-98E7-00A0C9702442};
+  function get_AppObject(pguidTypeInfo: ^GUID; out ppdispAppObject: ^IDispatch): HResult; stdcall;
